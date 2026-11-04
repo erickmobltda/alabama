@@ -161,6 +161,7 @@ ul.notes{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;line-hei
         <div class="checks">
           <label><input type="checkbox" id="vG" checked> Térreo</label>
           <label><input type="checkbox" id="vU" checked> Superior</label>
+          <label><input type="checkbox" id="vExt" checked> Exterior walls</label>
           <label><input type="checkbox" id="vRoof"> Roof slab</label>
           <label><input type="checkbox" id="vLabels" checked> Labels</label>
           <label><input type="checkbox" id="vApprox" checked> Mark approximate</label>
@@ -198,8 +199,10 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 function emptyModel(){return {version:2,floors:[{name:'Térreo',height:290},{name:'Superior',height:280}],slab:12,slabs:{},stair:null,rooms:[],walls:[],boxes:[],conduits:[]};}
 let S=emptyModel();
 const DATA_FILE='house.json';
+// Used only to migrate files saved before walls had an "exterior" flag: party walls and front/back façades
+const DEFAULT_EXTERIOR=['g1','g2','g3','g14','u1','u2','u3','u22','u23','u24','u25'];
 const store={mode:'none',state:'',msg:'',timer:null,lastSaved:'',local:false};
-const view={show:[true,true],roof:false,labels:true,approx:true,cut:1,edit:0,tool:'select',gizmo:null,tab:'ins'};
+const view={show:[true,true],exterior:true,roof:false,labels:true,approx:true,cut:1,edit:0,tool:'select',gizmo:null,tab:'ins'};
 let sel=null; // {kind,id}
 const undoStack=[],redoStack=[];
 function pushUndo(){undoStack.push(JSON.stringify(S));if(undoStack.length>120)undoStack.shift();redoStack.length=0;syncHistory();}
@@ -258,6 +261,8 @@ function normalize(o){
   o.slab=+o.slab||12; o.boxes=Array.isArray(o.boxes)?o.boxes:[]; o.conduits=Array.isArray(o.conduits)?o.conduits:[];
   o.walls.forEach(w=>{w.id=w.id||rid('w');w.floor=w.floor?1:0;['x1','y1','x2','y2'].forEach(k=>w[k]=+w[k]||0);w.t=+w.t||10;w.h=(w.h===null||w.h===undefined||w.h==='')?null:+w.h;w.type=w.type==='glass'?'glass':'wall';w.openings=Array.isArray(w.openings)?w.openings:[];w.name=w.name||'Wall';
     w.openings.forEach(p=>{p.id=p.id||rid('o');p.kind=p.kind==='window'?'window':'door';['offset','width','height','sill'].forEach(k=>p[k]=+p[k]||0);});});
+  const hasExt=o.walls.some(w=>'exterior' in w);
+  o.walls.forEach(w=>{w.exterior=hasExt?!!w.exterior:DEFAULT_EXTERIOR.includes(w.id);});
   const wids=new Set(o.walls.map(w=>w.id)); o.boxes=o.boxes.filter(b=>wids.has(b.wallId));
   const bids=new Set(o.boxes.map(b=>b.id)); o.conduits=o.conduits.filter(c=>bids.has(c.a)&&bids.has(c.b));
   o.floors.forEach(f=>f.height=+f.height||280); return o;
@@ -442,7 +447,8 @@ function rebuild3D(){
   if(sl.upper&&sl.upper.outer)floorG[1].add(slabMesh(sl.upper,base(1)-S.slab,S.slab,M.slabUp));
   if(sl.roof&&sl.roof.outer&&view.roof&&view.show[1])world.add(slabMesh(sl.roof,base(1)+floorH(1),S.slab,M.roof));
   buildStairs();
-  S.walls.forEach(buildWall);
+  const shown=w=>w&&(view.exterior||!w.exterior);
+  S.walls.filter(shown).forEach(buildWall);
   S.rooms.forEach(r=>{
     const isSel=sel&&sel.kind==='room'&&sel.id===r.id;
     if(view.labels||isSel){
@@ -457,8 +463,8 @@ function rebuild3D(){
       floorG[r.floor].add(new THREE.LineLoop(g,lm));
     }
   });
-  S.boxes.forEach(buildBox);
-  S.conduits.forEach(buildConduit);
+  S.boxes.filter(b=>shown(wallById(b.wallId))).forEach(buildBox);
+  S.conduits.filter(c=>{const A=boxById(c.a),B=boxById(c.b);return A&&B&&shown(wallById(A.wallId))&&shown(wallById(B.wallId));}).forEach(buildConduit);
   placeGizmo();
 }
 function refresh(){rebuild3D();renderPanel();syncToolbar();}
@@ -485,7 +491,7 @@ tc.addEventListener('mouseUp',()=>{if(!tcDrag)return;tcDrag=null;save();refresh(
 function placeGizmo(){
   if(tcDrag)return;
   const w=sel&&sel.kind==='wall'?wallById(sel.id):null;
-  if(!w||!view.gizmo||!view.show[w.floor]){tc.detach();return;}
+  if(!w||!view.gizmo||!view.show[w.floor]||(w.exterior&&!view.exterior)){tc.detach();return;}
   proxy.position.set((w.x1+w.x2)/2,base(w.floor)+Math.min(dispH(w),120),(w.y1+w.y2)/2);proxy.quaternion.identity();
   tc.setMode(view.gizmo);
   if(view.gizmo==='translate'){tc.showX=true;tc.showZ=true;tc.showY=false;}else{tc.showX=false;tc.showZ=false;tc.showY=true;}
@@ -571,7 +577,7 @@ function onClick(e){
     if(!wallStart){wallStart=s;hint();return;}
     if(Math.hypot(s.x-wallStart.x,s.y-wallStart.y)<5)return;
     pushUndo();
-    const w={id:rid('w'),floor:view.edit,name:'Wall '+(S.walls.length+1),x1:wallStart.x,y1:wallStart.y,x2:s.x,y2:s.y,t:10,h:null,type:'wall',approx:false,note:'',openings:[]};
+    const w={id:rid('w'),floor:view.edit,name:'Wall '+(S.walls.length+1),x1:wallStart.x,y1:wallStart.y,x2:s.x,y2:s.y,t:10,h:null,type:'wall',approx:false,exterior:false,note:'',openings:[]};
     S.walls.push(w);sel={kind:'wall',id:w.id};wallStart=s;save();refresh();return;
   }
   if(t==='box'){
@@ -633,7 +639,7 @@ function syncToolbar(){
 }
 function syncHistory(){$('#bUndo').disabled=!undoStack.length;$('#bRedo').disabled=!redoStack.length;}
 function syncControls(){
-  $('#vG').checked=view.show[0];$('#vU').checked=view.show[1];$('#vRoof').checked=view.roof;$('#vLabels').checked=view.labels;$('#vApprox').checked=view.approx;
+  $('#vG').checked=view.show[0];$('#vU').checked=view.show[1];$('#vExt').checked=view.exterior;$('#vRoof').checked=view.roof;$('#vLabels').checked=view.labels;$('#vApprox').checked=view.approx;
   $('#hG').value=S.floors[0].height;$('#hGo').textContent=S.floors[0].height+' cm';
   $('#hU').value=S.floors[1].height;$('#hUo').textContent=S.floors[1].height+' cm';
   $('#hCut').value=Math.round(view.cut*100);$('#hCuto').textContent=Math.round(view.cut*100)+'%';
@@ -653,6 +659,7 @@ function camPreset(k){
 }
 $('#vG').onchange=e=>{view.show[0]=e.target.checked;refresh();};
 $('#vU').onchange=e=>{view.show[1]=e.target.checked;refresh();};
+$('#vExt').onchange=e=>{view.exterior=e.target.checked;refresh();};
 $('#vRoof').onchange=e=>{view.roof=e.target.checked;refresh();};
 $('#vLabels').onchange=e=>{view.labels=e.target.checked;refresh();};
 $('#vApprox').onchange=e=>{view.approx=e.target.checked;refresh();};
@@ -711,7 +718,8 @@ function renderPanel(){
         ${num('wall',w.id,'h',w.h,'Height (blank = floor '+floorH(w.floor)+')')}
         <label class="fld"><span>Type</span><select data-scope="wall" data-id="${w.id}" data-f="type"><option value="wall"${w.type==='wall'?' selected':''}>Masonry</option><option value="glass"${w.type==='glass'?' selected':''}>Glass</option></select></label>
       </div>
-      <label class="chk"><input type="checkbox" data-scope="wall" data-id="${w.id}" data-f="approx"${w.approx?' checked':''}> Approximate measurement</label>
+      <div class="checks"><label class="chk"><input type="checkbox" data-scope="wall" data-id="${w.id}" data-f="approx"${w.approx?' checked':''}> Approximate measurement</label>
+      <label class="chk"><input type="checkbox" data-scope="wall" data-id="${w.id}" data-f="exterior"${w.exterior?' checked':''}> Exterior wall</label></div>
       <div class="btns"><button class="btn sm" data-act="gizmo-move" aria-pressed="${view.gizmo==='translate'}">Move</button><button class="btn sm" data-act="gizmo-rot" aria-pressed="${view.gizmo==='rotate'}">Rotate</button><button class="btn sm" data-act="flip">Swap ends</button></div>
       <h3>Openings</h3>
       <p class="muted">Offset is the opening centre, measured from the wall start. Sizes follow the plan notation width × height / sill.</p>
@@ -818,10 +826,10 @@ function buildMd(embed=true){
   S.rooms.forEach(r=>{const [x0,y0,x1,y1]=r.bounds;L.push(`| ${r.id} | ${fn(r.floor)} | ${cell(r.name)} | ${cell(r.area||'—')} | ${R(x0)}–${R(x1)} | ${R(y0)}–${R(y1)} | ${R(r.x)}, ${R(r.y)} |`);});
   L.push('','## Walls','');
   [0,1].forEach(f=>{
-    L.push(`### ${fn(f)}`,'','| ID | Name | Start (x,y) | End (x,y) | Length | Thick | Height | Type | Approx | Openings |','|---|---|---|---|---|---|---|---|---|---|');
+    L.push(`### ${fn(f)}`,'','| ID | Name | Start (x,y) | End (x,y) | Length | Thick | Height | Type | Exterior | Approx | Openings |','|---|---|---|---|---|---|---|---|---|---|---|');
     S.walls.filter(w=>w.floor===f).forEach(w=>{
       const ops=w.openings.map(o=>`${o.kind} ${R(o.width)}×${R(o.height)}${o.kind==='window'?'/'+R(o.sill):''} @${R(o.offset)}${o.approx?' (approx)':''}`).join('; ')||'—';
-      L.push(`| ${w.id} | ${cell(w.name)} | ${R(w.x1)}, ${R(w.y1)} | ${R(w.x2)}, ${R(w.y2)} | ${R(geom(w).L)} | ${w.t} | ${R(wallH(w))} | ${w.type==='glass'?'glass':'masonry'} | ${w.approx?'yes':'no'} | ${cell(ops)} |`);
+      L.push(`| ${w.id} | ${cell(w.name)} | ${R(w.x1)}, ${R(w.y1)} | ${R(w.x2)}, ${R(w.y2)} | ${R(geom(w).L)} | ${w.t} | ${R(wallH(w))} | ${w.type==='glass'?'glass':'masonry'} | ${w.exterior?'yes':'no'} | ${w.approx?'yes':'no'} | ${cell(ops)} |`);
     });L.push('');
   });
   L.push('## Junction boxes','',`${S.boxes.length} boxes. Boxes are 12 × 12 cm squares mounted on a wall face.`,'','| ID | Label | Floor | Room | Wall | Along | z | Face | Faces | Plan x, y | Abs. elevation | Conduits |','|---|---|---|---|---|---|---|---|---|---|---|---|');
@@ -831,7 +839,7 @@ function buildMd(embed=true){
   S.conduits.forEach(c=>{const A=boxById(c.a),B=boxById(c.b),pts=conduitPts(c)||[];
     L.push(`| ${c.id} | ${A.id} ${cell(A.label)} | ${B.id} ${cell(B.label)} | ${c.mode==='straight'?'straight':'orthogonal'} | ${(conLen(c)/100).toFixed(2)} | ${pts.map(p=>`(${R(p.x)}, ${R(p.z)}, ${R(p.y)})`).join(' → ')} |`);});
   L.push('','## Not modelled','','- Floor level steps (−0,70 / −0,65 / +0,60 / +0,65 m); every floor plate is flat.','- Roof parapet, rufo, marquise and façade cladding.','- Door leaves and swing direction.','');
-  L.push('## Editing the model','',(embed?'To change the house, edit the JSON below and paste it into Data → Import in the 3D model.':'The full model lives in `house.json` next to this file; edit it directly (then use Data → Reload in the page) or through the page. This file is regenerated on every save.')+' Schema: `floors[2]{name,height}`, `slab`, `walls[]{id,floor(0|1),name,x1,y1,x2,y2,t,h(null = floor height),type("wall"|"glass"),approx,openings[]{id,kind("door"|"window"),offset,width,height,sill}}`, `rooms[]{id,floor,name,area,x,y,bounds[x0,y0,x1,y1]}`, `boxes[]{id,label,wallId,along,z,side(1 = Face A, -1 = Face B)}`, `conduits[]{id,a,b,mode("orthogonal"|"straight")}`, plus `slabs{ground,upper,roof}{outer[[x,y]],holes[[[x,y]]]}` and `stair`.','');
+  L.push('## Editing the model','',(embed?'To change the house, edit the JSON below and paste it into Data → Import in the 3D model.':'The full model lives in `house.json` next to this file; edit it directly (then use Data → Reload in the page) or through the page. This file is regenerated on every save.')+' Schema: `floors[2]{name,height}`, `slab`, `walls[]{id,floor(0|1),name,x1,y1,x2,y2,t,h(null = floor height),type("wall"|"glass"),exterior,approx,openings[]{id,kind("door"|"window"),offset,width,height,sill}}`, `rooms[]{id,floor,name,area,x,y,bounds[x0,y0,x1,y1]}`, `boxes[]{id,label,wallId,along,z,side(1 = Face A, -1 = Face B)}`, `conduits[]{id,a,b,mode("orthogonal"|"straight")}`, plus `slabs{ground,upper,roof}{outer[[x,y]],holes[[[x,y]]]}` and `stair`.','');
   if(embed)L.push('```json',JSON.stringify(S),'```','');
   return L.join('\n');
 }
@@ -874,6 +882,7 @@ pane.addEventListener('change',e=>{
     else if(f==='h')w.h=v===''||isNaN(n)?null:clamp(n,10,800);
     else if(f==='type')w.type=v;
     else if(f==='approx')w.approx=v;
+    else if(f==='exterior')w.exterior=v;
     else w[f]=r1(n);
   } else if(sc==='open'){
     const w=wallById(el.dataset.w),p=w&&w.openings.find(x=>x.id===el.dataset.id);if(!p)return;

@@ -52,7 +52,8 @@ The JSON is formatted with one property per line and coordinate pairs on one lin
 
 **View**
 - Orbit, zoom and pan the camera (mouse, trackpad or touch), with preset views: 3D, Top and Street.
-- Show or hide each floor and the roof slab; toggle labels.
+- Show or hide each floor, the exterior walls and the roof slab; toggle labels.
+- "Exterior walls" hides every wall flagged exterior (by default the party walls and the front and back façades), together with their boxes and conduits. Any wall can be flagged in its inspector.
 - Wall-height sliders per floor. Raising the ground floor lifts the whole upper floor.
 - "Wall cut" slider to lower all walls and look inside.
 - Approximate measurements are tinted amber.
@@ -111,7 +112,7 @@ stair       {width, tread, risers, approx,
              flight1: {x0, x1, yStart, treads}, landing: {x0, x1, y0, y1}, flight2: {y0, y1, xStart, treads}}
 rooms[]     {id, floor (0|1), name, area, x, y, bounds [x0, y0, x1, y1]}
 walls[]     {id, floor (0|1), name, x1, y1, x2, y2, t, h (null = floor height),
-             type ("wall"|"glass"), approx, note,
+             type ("wall"|"glass"), exterior, approx, note,
              openings[] {id, kind ("door"|"window"), offset, width, height, sill, approx, note}}
 boxes[]     {id, label, wallId, along, z, side (1 = Face A, -1 = Face B)}
 conduits[]  {id, a, b, mode ("orthogonal"|"straight")}
