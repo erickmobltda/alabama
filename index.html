@@ -58,6 +58,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-b);fo
 #panel header{padding:16px 16px 10px;border-bottom:1px solid var(--line)}
 #panel h1{font:700 26px/1 var(--font-d);letter-spacing:.02em;margin:0;text-transform:uppercase}
 #panel header p{margin:6px 0 0;color:var(--muted);font-size:12.5px}
+#panel header p.store{font:12px var(--font-m);display:flex;align-items:center;gap:6px}
+.store::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.store[data-s="ok"]::before{background:#3f9b57}.store[data-s="busy"]::before{background:var(--conduit)}.store[data-s="err"]::before{background:var(--danger)}.store[data-s="ro"]::before{background:var(--sel)}
 .scroll{overflow-y:auto;min-height:0;flex:1 1 auto}
 section.blk{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
 .eyebrow{font:600 12px/1 var(--font-d);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
@@ -150,6 +153,7 @@ ul.notes{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;line-hei
     <header>
       <h1>Unidade 05</h1>
       <p>Two-floor townhouse · lot 4,96 × 16,95 m · dimensions in cm</p>
+      <p id="store" class="store" role="status"></p>
     </header>
     <div class="scroll">
       <section class="blk" aria-label="View">
@@ -190,85 +194,11 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const r1=v=>Math.round(v*10)/10;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-/* ---------- Default model, read from the plans (cm). x: across the lot (left party wall outer face = 0), y: from back line (0) to street (1695) ---------- */
-function defaultModel(){
-  const O=(kind,offset,width,height,sill,extra={})=>({id:rid('o'),kind,offset,width,height,sill:kind==='door'?0:sill,approx:!!extra.approx,note:extra.note||''});
-  const W=(id,floor,name,x1,y1,x2,y2,t,o={})=>({id,floor,name,x1,y1,x2,y2,t,h:o.h??null,type:o.type||'wall',approx:!!o.approx,note:o.note||'',openings:o.open||[]});
-  const walls=[
-    // Térreo
-    W('g1',0,'Party wall (left)',10,-83,10,1695,20,{approx:true,note:'Back end (−83) scaled from drawing'}),
-    W('g2',0,'Party wall (right)',486,-150,486,1695,20),
-    W('g3',0,'A.Serviço back',20,5,164,5,10,{approx:true,note:'Width derived from 3,53 m²',open:[O('window',61,100,120,90)]}),
-    W('g4',0,'A.Serviço side',164,0,164,276,10,{approx:true,note:'Position derived from area',open:[O('door',216,80,210)]}),
-    W('g5',0,'A.Serviço / Lavabo',20,271,164,271,10,{approx:true}),
-    W('g6',0,'Lavabo side',150,276,150,436,10,{open:[O('door',115,70,210,0,{approx:true})]}),
-    W('g7',0,'Lavabo back',20,436,155,436,10,{open:[O('window',58,100,50,170)]}),
-    W('g8',0,'Churrasqueira / Estar',20,570,476,570,10,{open:[O('door',100,90,210,0,{approx:true,note:'Position scaled'}),O('window',315,130,100,110)]}),
-    W('g9',0,'Churrasqueira (grill)',416,41,476,41,82,{h:220,approx:true,note:'Grill block 60×82; height assumed 220'}),
-    W('g10',0,'Cozinha / Estar',268,880,476,880,10),
-    W('g11',0,'Garagem / Estar',20,1200,242,1200,10,{open:[O('window',105,150,120,90)]}),
-    W('g12',0,'Garagem chamfer',242,1200,295,1253,10),
-    W('g13',0,'Garagem side',295,1253,295,1695,10,{open:[O('door',311,142,210,0,{approx:true,note:'Passage 142 wide; head height assumed'})]}),
-    W('g14',0,'Entrance',300,1488,476,1488,10,{open:[O('door',106,130,250)]}),
-    // Superior
-    W('u1',1,'Party wall (left)',10,0,10,1695,20),
-    W('u2',1,'Party wall (right)',486,-150,486,1695,20),
-    W('u3',1,'Dormitório back',150,5,476,5,10,{open:[O('window',165,150,120,90)]}),
-    W('u4',1,'BWC / Dormitório',150,0,150,428,10,{open:[O('door',383,70,210,0,{approx:true})]}),
-    W('u5',1,'BWC window wall',20,165,150,165,10,{approx:true,open:[O('window',63,100,50,160)]}),
-    W('u6',1,'BWC / Vazio',20,423,150,423,10,{approx:true}),
-    W('u7',1,'Dormitório front',155,320,476,320,10,{open:[O('door',42,80,210,0,{approx:true})]}),
-    W('u8',1,'Vazio glass (circulation)',240,325,240,565,10,{type:'glass',approx:true,note:'Fechamento com vidro, position scaled'}),
-    W('u9',1,'Vazio glass (light well)',150,428,150,565,10,{type:'glass',approx:true}),
-    W('u10',1,'BWC 2 back',20,570,150,570,10,{open:[O('window',63,100,50,160)]}),
-    W('u11',1,'Dormitório 2 back',240,570,476,570,10,{open:[O('window',155,130,120,90)]}),
-    W('u12',1,'BWC 2 side',150,570,150,830,10),
-    W('u13',1,'Dormitório 2 side',250,575,250,831,10,{open:[O('door',45,80,210,0,{approx:true})]}),
-    W('u14',1,'Dormitório 2 chamfer',250,831,294,880,10),
-    W('u15',1,'Dormitório 2 front',294,880,476,880,10),
-    W('u16',1,'BWC 2 / Suíte',20,830,150,830,10,{open:[O('door',85,70,210)]}),
-    W('u17',1,'Suíte chamfer (BWC)',150,830,165,845,10,{approx:true}),
-    W('u18',1,'Suíte side (circulation)',165,845,165,1195,10,{approx:true,note:'Suíte door type/position unclear on plan',open:[O('door',65,80,210,0,{approx:true})]}),
-    W('u19',1,'Suíte step',165,1195,245,1195,10,{approx:true}),
-    W('u20',1,'Suíte chamfer (vazio)',245,1195,295,1245,10,{approx:true}),
-    W('u21',1,'Suíte side (vazio)',295,1245,295,1570,10),
-    W('u22',1,'Suíte / Sacada',20,1570,300,1570,10,{approx:true,open:[O('door',129,160,210)]}),
-    W('u23',1,'Sacada railing',20,1692,300,1692,5,{type:'glass',h:110,approx:true,note:'Railing type and height assumed'}),
-    W('u24',1,'Sacada railing (side)',297,1575,297,1692,5,{type:'glass',h:110,approx:true}),
-    W('u25',1,'Vidro fixo (façade)',300,1480,476,1480,10,{type:'glass'}),
-    W('u26',1,'Circulation guard',170,975,246,975,5,{type:'glass',h:110,approx:true,note:'Guard assumed at stair arrival'})
-  ];
-  const boxes=[
-    {id:'b1',label:'Outlet (example)',wallId:'g11',along:20,z:30,side:-1},
-    {id:'b2',label:'Switch (example)',wallId:'g11',along:200,z:110,side:-1},
-    {id:'b3',label:'Outlet (example)',wallId:'g8',along:215,z:30,side:1}
-  ];
-  const conduits=[
-    {id:'c1',a:'b1',b:'b2',mode:'orthogonal'},
-    {id:'c2',a:'b2',b:'b3',mode:'orthogonal'}
-  ];
-  return {version:1,floors:[{name:'Térreo',height:290},{name:'Superior',height:280}],slab:12,walls,boxes,conduits,rooms:defaultRooms()};
-}
-
-// [floor, name, area, labelX, labelY, [x0,y0,x1,y1] bounding rectangle]
-const ROOMS=[
-  [0,'A.Serviço','3,53 m²',89,128,[20,0,159,266]],[0,'Lavabo','1,93 m²',85,353,[20,276,145,431]],
-  [0,'Churrasqueira','19,44 m²',300,280,[169,0,476,565]],[0,'Cozinha','6,18 m²',372,725,[270,575,476,875]],
-  [0,'Estar/Jantar','26,97 m²',140,900,[20,575,476,1195]],[0,'Garagem','13,10 m²',155,1450,[20,1205,290,1695]],
-  [1,'Dormitório','9,80 m²',315,165,[155,10,476,315]],[1,'BWC','3,12 m²',85,295,[20,170,145,418]],
-  [1,'BWC','3,12 m²',85,700,[20,575,145,825]],[1,'Circ.','6,13 m²',200,720,[155,325,240,975]],
-  [1,'Dormitório','6,60 m²',365,730,[255,575,476,875]],[1,'Suíte','14,71 m²',90,1300,[20,835,295,1565]],
-  [1,'Sacada','3,36 m²',160,1635,[20,1575,295,1690]],
-  [1,'Vazio','',358,445,[245,325,476,565]],[1,'Vazio','',85,496,[20,428,145,565]],[1,'Vazio','',390,1250,[170,885,476,1475]]
-];
-function defaultRooms(){return ROOMS.map(([floor,name,area,x,y,b],i)=>({id:'r'+(i+1),floor,name,area,x,y,bounds:b.slice()}));}
-const SLAB_UP={outer:[[0,0],[496,0],[496,1485],[300,1485],[300,1695],[0,1695]],
-  holes:[[[245,325],[476,325],[476,565],[245,565]],[[20,428],[145,428],[145,565],[20,565]],
-  [[170,975],[246,975],[246,885],[476,885],[476,1475],[300,1475],[300,1245],[245,1195],[170,1195]]]};
-const ROOF={outer:[[0,0],[496,0],[496,1695],[0,1695]],holes:[SLAB_UP.holes[0],SLAB_UP.holes[1]]};
-
 /* ---------- State ---------- */
-let S=load()||defaultModel();
+function emptyModel(){return {version:2,floors:[{name:'Térreo',height:290},{name:'Superior',height:280}],slab:12,slabs:{},stair:null,rooms:[],walls:[],boxes:[],conduits:[]};}
+let S=emptyModel();
+const DATA_FILE='house.json';
+const store={mode:'none',state:'',msg:'',timer:null,lastSaved:'',local:false};
 const view={show:[true,true],roof:false,labels:true,approx:true,cut:1,edit:0,tool:'select',gizmo:null,tab:'ins'};
 let sel=null; // {kind,id}
 const undoStack=[],redoStack=[];
@@ -276,11 +206,54 @@ function pushUndo(){undoStack.push(JSON.stringify(S));if(undoStack.length>120)un
 function undo(){if(!undoStack.length)return;redoStack.push(JSON.stringify(S));S=JSON.parse(undoStack.pop());afterLoad();toast('Undone');}
 function redo(){if(!redoStack.length)return;undoStack.push(JSON.stringify(S));S=JSON.parse(redoStack.pop());afterLoad();toast('Redone');}
 function afterLoad(){if(sel&&!getSel())sel=null;syncControls();refresh();save();}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-function load(){try{const t=localStorage.getItem(KEY);if(!t)return null;const o=JSON.parse(t);return valid(o)?normalize(o):null;}catch(e){return null;}}
+// Compact JSON: one key per line, numeric arrays on one line, so git diffs stay readable
+function fmtJSON(o){return JSON.stringify(o,null,2).replace(/\[\s+([-\d.,\s]+?)\s+\]/g,(m,inner)=>'['+inner.split(/,\s*/).map(x=>x.trim()).join(', ')+']')+'\n';}
+function save(){
+  if(store.mode==='file'){clearTimeout(store.timer);setStore('saving');store.timer=setTimeout(saveToFile,500);return;}
+  try{localStorage.setItem(KEY,JSON.stringify(S));store.local=true;}catch(e){}
+  setStore();
+}
+async function saveToFile(){
+  const json=fmtJSON(S);
+  if(json===store.lastSaved){setStore('saved');return;}
+  try{
+    const r=await fetch('api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json,md:buildMd(false)})});
+    if(!r.ok)throw new Error((await r.text())||('HTTP '+r.status));
+    store.lastSaved=json;setStore('saved');
+  }catch(e){setStore('error',e.message);toast('Could not save house.json');}
+}
+function loadLocal(){try{const t=localStorage.getItem(KEY);if(!t)return null;const o=JSON.parse(t);return valid(o)?normalize(o):null;}catch(e){return null;}}
+function setStore(state,msg){
+  if(state!==undefined){store.state=state;store.msg=msg||'';}
+  const el=document.getElementById('store');if(!el)return;
+  let t,c='';
+  if(store.mode==='file'){t=store.state==='saving'?'Saving to house.json…':store.state==='error'?'Not saved: '+store.msg:'Saved to house.json';c=store.state==='error'?'err':store.state==='saving'?'busy':'ok';}
+  else if(store.mode==='static'){t=store.local?'Read-only copy · edits kept in this browser only':'Read-only copy of house.json';c='ro';}
+  else{t=store.local?'house.json not found · showing edits from this browser':'house.json not found · start the local server';c='err';}
+  el.textContent=t;el.dataset.s=c;
+}
+async function boot(){
+  let fileData=null,server=false;
+  try{const r=await fetch(DATA_FILE,{cache:'no-store'});if(r.ok){const o=await r.json();if(valid(o))fileData=o;}}catch(e){}
+  try{const r=await fetch('api/status',{cache:'no-store'});if(r.ok){const j=await r.json();server=!!j.ok;}}catch(e){}
+  if(server){
+    store.mode='file';
+    if(fileData){S=normalize(fileData);store.lastSaved=fmtJSON(S);}
+    store.state='saved';
+  }else{
+    store.mode=fileData?'static':'none';
+    const local=loadLocal();
+    if(local){S=local;store.local=true;}else if(fileData)S=normalize(fileData);
+  }
+  setStore();syncControls();refresh();
+  if(store.mode==='none'&&!store.local)toast('house.json not found. Run "node server.js" in the repo folder.');
+}
 function valid(o){return o&&Array.isArray(o.walls)&&Array.isArray(o.floors)&&o.floors.length===2;}
 function normalize(o){
-  if(!Array.isArray(o.rooms))o.rooms=defaultRooms();
+  if(!Array.isArray(o.rooms))o.rooms=[];
+  if(!o.slabs||typeof o.slabs!=='object')o.slabs=(S&&S.slabs)||{};
+  if(o.stair===undefined)o.stair=(S&&S.stair)||null;
+  o.version=2;
   o.rooms.forEach(r=>{r.id=r.id||rid('r');r.floor=r.floor?1:0;r.name=r.name||'Room';r.area=r.area||'';r.x=+r.x||0;r.y=+r.y||0;r.bounds=Array.isArray(r.bounds)&&r.bounds.length===4?r.bounds.map(Number):[r.x-50,r.y-50,r.x+50,r.y+50];});
   o.slab=+o.slab||12; o.boxes=Array.isArray(o.boxes)?o.boxes:[]; o.conduits=Array.isArray(o.conduits)?o.conduits:[];
   o.walls.forEach(w=>{w.id=w.id||rid('w');w.floor=w.floor?1:0;['x1','y1','x2','y2'].forEach(k=>w[k]=+w[k]||0);w.t=+w.t||10;w.h=(w.h===null||w.h===undefined||w.h==='')?null:+w.h;w.type=w.type==='glass'?'glass':'wall';w.openings=Array.isArray(w.openings)?w.openings:[];w.name=w.name||'Wall';
@@ -372,7 +345,7 @@ const floorG=[null,null];
 function disposeTree(o){o.traverse(n=>{if(n.geometry)n.geometry.dispose();if(n.material&&n.material.userData&&n.material.userData.own)n.material.dispose();});}
 function shapeFrom(pts,Ctor){const s=new Ctor();pts.forEach((p,i)=>i?s.lineTo(p[0],-p[1]):s.moveTo(p[0],-p[1]));s.closePath();return s;}
 function slabMesh(def,y,th,mat){
-  const s=shapeFrom(def.outer,THREE.Shape);def.holes.forEach(h=>s.holes.push(shapeFrom(h,THREE.Path)));
+  const s=shapeFrom(def.outer,THREE.Shape);(def.holes||[]).forEach(h=>s.holes.push(shapeFrom(h,THREE.Path)));
   const m=new THREE.Mesh(new THREE.ExtrudeGeometry(s,{depth:th,bevelEnabled:false}),mat);
   m.rotation.x=-Math.PI/2;m.position.y=y;m.receiveShadow=true;m.castShadow=true;return m;
 }
@@ -412,11 +385,12 @@ function buildWall(w){
   floorG[w.floor].add(grp);
 }
 function buildStairs(){
-  const g=floorG[0],top=base(1),r=top/17,y0=1253;
+  const st=S.stair;if(!st||!st.flight1)return;
+  const g=floorG[0],top=base(1),r=top/st.risers,T=st.tread,f1=st.flight1,Ld=st.landing,f2=st.flight2,kL=f1.treads+1;
   const step=(x0,x1,z0,z1,k,th)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(x1-x0,th,z1-z0),M.stair);m.position.set((x0+x1)/2,k*r-th/2,(z0+z1)/2);m.castShadow=true;m.receiveShadow=true;g.add(m);addEdges(m,g);};
-  for(let k=1;k<=10;k++)step(386,476,y0-28*k,y0-28*(k-1),k,r+8);
-  step(386,476,885,y0-280,11,18);
-  for(let k=12;k<=16;k++)step(386-28*(k-11),386-28*(k-12),885,975,k,r+8);
+  for(let k=1;k<=f1.treads;k++)step(f1.x0,f1.x1,f1.yStart-T*k,f1.yStart-T*(k-1),k,r+8);
+  if(Ld)step(Ld.x0,Ld.x1,Ld.y0,Ld.y1,kL,18);
+  if(f2)for(let j=1;j<=f2.treads;j++)step(f2.xStart-T*j,f2.xStart-T*(j-1),f2.y0,f2.y1,kL+j,r+8);
 }
 function facePt(w,along,z,side){const G=geom(w),off=(w.t/2+1.4)*side;return new THREE.Vector3(w.x1+G.ux*along+G.nx*off,base(w.floor)+z,w.y1+G.uy*along+G.ny*off);}
 function buildBox(b){
@@ -463,9 +437,10 @@ function buildConduit(c){
 function rebuild3D(){
   disposeTree(world);world.clear();pickables.length=0;
   for(const f of [0,1]){floorG[f]=new THREE.Group();floorG[f].visible=view.show[f];world.add(floorG[f]);}
-  floorG[0].add(slabMesh({outer:[[0,-150],[496,-150],[496,1695],[0,1695]],holes:[]},-4,4,M.slab));
-  floorG[1].add(slabMesh(SLAB_UP,base(1)-S.slab,S.slab,M.slabUp));
-  if(view.roof&&view.show[1])world.add(slabMesh(ROOF,base(1)+floorH(1),12,M.roof));
+  const sl=S.slabs||{};
+  if(sl.ground&&sl.ground.outer){const th=sl.ground.thickness||4;floorG[0].add(slabMesh(sl.ground,(sl.ground.top||0)-th,th,M.slab));}
+  if(sl.upper&&sl.upper.outer)floorG[1].add(slabMesh(sl.upper,base(1)-S.slab,S.slab,M.slabUp));
+  if(sl.roof&&sl.roof.outer&&view.roof&&view.show[1])world.add(slabMesh(sl.roof,base(1)+floorH(1),S.slab,M.roof));
   buildStairs();
   S.walls.forEach(buildWall);
   S.rooms.forEach(r=>{
@@ -819,7 +794,7 @@ function focusRoom(id){
 /* ---------- Markdown export for AI agents ---------- */
 function facing(b){const {n}=boxNormal(b);return Math.abs(n.x)>Math.abs(n.z)?(n.x>0?'+x (right)':'−x (left)'):(n.z>0?'+y (toward street)':'−y (toward back)');}
 function roomOf(f,x,y){let best=null,ba=Infinity;for(const r of S.rooms){if(r.floor!==f)continue;const [x0,y0,x1,y1]=r.bounds;if(x>=Math.min(x0,x1)-6&&x<=Math.max(x0,x1)+6&&y>=Math.min(y0,y1)-6&&y<=Math.max(y0,y1)+6){const a=Math.abs((x1-x0)*(y1-y0));if(a<ba){ba=a;best=r;}}}return best;}
-function buildMd(){
+function buildMd(embed=true){
   const R=Math.round,L=[],fn=f=>S.floors[f].name,cell=s=>String(s).replace(/\|/g,'/');
   const total=S.conduits.reduce((s,c)=>s+conLen(c),0);
   L.push('# Unidade 05 · house model',``,`Generated ${new Date().toISOString().slice(0,16).replace('T',' ')} from the interactive 3D model. Source drawings: floor plans (térreo, superior) and sections Corte AA / Corte BB at 1:50. Two-floor attached townhouse.`,``);
@@ -835,7 +810,10 @@ function buildMd(){
     '- `approx` means the value was scaled from the drawing or derived from a room area, not read from a dimension.','');
   L.push('## Floors','','| Floor | Base elevation | Wall height | Slab below |','|---|---|---|---|');
   [0,1].forEach(f=>L.push(`| ${fn(f)} | ${base(f)} | ${floorH(f)} | ${f?S.slab:'ground'} |`));
-  L.push('','Stair: quarter-turn, 90 wide, 17 risers of '+(base(1)/17).toFixed(1)+' cm, 28 cm treads. First flight along the right party wall rising toward the back from y≈1253 to y≈973 (x 386–476), landing x 386–476 / y 885–973, second flight rising toward −x along y 885–975 to arrive at x≈246 on the upper floor. Approximate.','');
+  const st=S.stair;
+  if(st&&st.flight1){const f1=st.flight1,Ld=st.landing,f2=st.flight2;
+    L.push('','Stair'+(st.approx?' (approximate)':'')+': '+st.width+' wide, '+st.risers+' risers of '+(base(1)/st.risers).toFixed(1)+' cm, '+st.tread+' cm treads. First flight: x '+f1.x0+'–'+f1.x1+', rising toward −y from y '+f1.yStart+' to y '+(f1.yStart-st.tread*f1.treads)+'.'+(Ld?' Landing: x '+Ld.x0+'–'+Ld.x1+', y '+Ld.y0+'–'+Ld.y1+'.':'')+(f2?' Second flight: y '+f2.y0+'–'+f2.y1+', rising toward −x from x '+f2.xStart+' to x '+(f2.xStart-st.tread*f2.treads)+', arriving on '+fn(1)+'.':''),'');}
+  else L.push('');
   L.push('## Rooms','','| ID | Floor | Name | Area | Bounds x | Bounds y | Label at |','|---|---|---|---|---|---|---|');
   S.rooms.forEach(r=>{const [x0,y0,x1,y1]=r.bounds;L.push(`| ${r.id} | ${fn(r.floor)} | ${cell(r.name)} | ${cell(r.area||'—')} | ${R(x0)}–${R(x1)} | ${R(y0)}–${R(y1)} | ${R(r.x)}, ${R(r.y)} |`);});
   L.push('','## Walls','');
@@ -853,31 +831,29 @@ function buildMd(){
   S.conduits.forEach(c=>{const A=boxById(c.a),B=boxById(c.b),pts=conduitPts(c)||[];
     L.push(`| ${c.id} | ${A.id} ${cell(A.label)} | ${B.id} ${cell(B.label)} | ${c.mode==='straight'?'straight':'orthogonal'} | ${(conLen(c)/100).toFixed(2)} | ${pts.map(p=>`(${R(p.x)}, ${R(p.z)}, ${R(p.y)})`).join(' → ')} |`);});
   L.push('','## Not modelled','','- Floor level steps (−0,70 / −0,65 / +0,60 / +0,65 m); every floor plate is flat.','- Roof parapet, rufo, marquise and façade cladding.','- Door leaves and swing direction.','');
-  L.push('## Editing the model','','To change the house, edit the JSON below and paste it into Data → Import in the 3D model. Schema: `floors[2]{name,height}`, `slab`, `walls[]{id,floor(0|1),name,x1,y1,x2,y2,t,h(null = floor height),type("wall"|"glass"),approx,openings[]{id,kind("door"|"window"),offset,width,height,sill}}`, `rooms[]{id,floor,name,area,x,y,bounds[x0,y0,x1,y1]}`, `boxes[]{id,label,wallId,along,z,side(1 = Face A, -1 = Face B)}`, `conduits[]{id,a,b,mode("orthogonal"|"straight")}`.','','```json',JSON.stringify(S),'```','');
+  L.push('## Editing the model','',(embed?'To change the house, edit the JSON below and paste it into Data → Import in the 3D model.':'The full model lives in `house.json` next to this file; edit it directly (then use Data → Reload in the page) or through the page. This file is regenerated on every save.')+' Schema: `floors[2]{name,height}`, `slab`, `walls[]{id,floor(0|1),name,x1,y1,x2,y2,t,h(null = floor height),type("wall"|"glass"),approx,openings[]{id,kind("door"|"window"),offset,width,height,sill}}`, `rooms[]{id,floor,name,area,x,y,bounds[x0,y0,x1,y1]}`, `boxes[]{id,label,wallId,along,z,side(1 = Face A, -1 = Face B)}`, `conduits[]{id,a,b,mode("orthogonal"|"straight")}`, plus `slabs{ground,upper,roof}{outer[[x,y]],holes[[[x,y]]]}` and `stair`.','');
+  if(embed)L.push('```json',JSON.stringify(S),'```','');
   return L.join('\n');
 }
-let resetArm=false,clearArm=false;
+let clearArm=false;
 function renderData(){
-  pane.innerHTML=`<h3>For AI agents</h3>
-    <p class="muted">A Markdown brief of the current model: coordinate system, floors, rooms, every wall and opening, where each box sits (room, wall, height, position) and each conduit's route and length, plus the JSON to edit. It is rebuilt from your latest edits every time you open this tab.</p>
-    <label class="fld full"><span>house-model.md</span><textarea id="mdOut" readonly>${esc(buildMd())}</textarea></label>
-    <div class="btns"><button class="btn primary" data-act="copy-md">Copy Markdown</button></div>
-    <h3>Backup</h3>
-    <p class="muted">Your edits are saved in this browser automatically. To move them elsewhere, copy the JSON below; to restore, paste it back or load a .json file.</p>
-    <label class="fld full"><span>Export</span><textarea id="exp" readonly>${esc(JSON.stringify(S))}</textarea></label>
+  const fileMode=store.mode==='file';
+  pane.innerHTML=`<h3>Saving</h3>
+    ${fileMode?`<p class="muted">Every change is written to <b>house.json</b> (and the AI brief <b>house.md</b>) in your repository folder. Commit those files to keep the history.</p>
+      <div class="btns"><button class="btn" data-act="reload-file">Reload from house.json</button></div>
+      <p class="muted">Use reload after editing house.json by hand or after a git checkout.</p>`
+    :`<p class="muted">${store.mode==='static'?'This copy is read-only (for example GitHub Pages), so edits stay in this browser.':'house.json could not be loaded. Run <b>node server.js</b> in the repository folder and open the address it prints.'} To keep edits, download house.json and commit it.</p>
+      <div class="btns"><button class="btn primary" data-act="download-json">Download house.json</button>${store.local&&store.mode==='static'?'<button class="btn danger" data-act="discard-local">Discard browser edits</button>':''}</div>`}
+    <h3>For AI agents</h3>
+    <p class="muted">Markdown brief of the current model: coordinate system, floors, stair, rooms, every wall and opening, where each box is and each conduit's route and length.${fileMode?' It is also saved as house.md on every change.':''}</p>
+    <label class="fld full"><span>house.md</span><textarea id="mdOut" readonly>${esc(buildMd(!fileMode))}</textarea></label>
+    <div class="btns"><button class="btn" data-act="copy-md">Copy Markdown</button></div>
+    <h3>JSON</h3>
+    <label class="fld full"><span>Current model</span><textarea id="exp" readonly>${esc(fmtJSON(S))}</textarea></label>
     <div class="btns"><button class="btn" data-act="copy">Copy JSON</button></div>
-    <label class="fld full"><span>Import</span><textarea id="imp" placeholder="Paste exported JSON here"></textarea></label>
+    <label class="fld full"><span>Import</span><textarea id="imp" placeholder="Paste a model JSON here"></textarea></label>
     <div class="btns"><button class="btn" data-act="import">Load pasted JSON</button><label class="btn" for="impFile">Load .json file</label><input type="file" id="impFile" accept=".json,application/json" hidden></div>
-    <div class="btns"><button class="btn danger" data-act="reset">${resetArm?'Click again to reset':'Reset to original plan'}</button></div>
-    <h3>How this model was read</h3>
-    <ul class="notes">
-      <li>Lot outline 496 × 1695 cm from the plan chains; party walls 20 cm, interior walls 10 cm.</li>
-      <li>Heights from Corte BB: Térreo 290 cm, slab 12 cm, Superior 280 cm. The sliders change them.</li>
-      <li>Door and window sizes come from the plan labels (width × height / sill). Their position along each wall was scaled from the drawing, so expect about ±10 cm.</li>
-      <li>Stair: 17 risers, 28 cm treads, 90 cm wide, quarter-turn landing; riser height is floor-to-floor ÷ 17. Marked approximate.</li>
-      <li>Floor level steps (−0,70 / −0,65 / +0,60 / +0,65 m) are not modelled; every floor plate is flat.</li>
-      <li>Not modelled: roof parapet, rufo, marquise, façade cladding.</li>
-    </ul>`;
+    <p class="muted">Importing replaces the model${fileMode?' and overwrites house.json':''}. Undo brings it back.</p>`;
   const f=$('#impFile');if(f)f.onchange=()=>{const file=f.files[0];if(!file)return;const rd=new FileReader();rd.onload=()=>importText(rd.result);rd.readAsText(file);};
 }
 function importText(t){
@@ -931,7 +907,7 @@ pane.addEventListener('change',e=>{
 });
 pane.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
-  if(a!=='reset')resetArm=false;if(a!=='clear-elec')clearArm=false;
+  if(a!=='clear-elec')clearArm=false;
   const w=sel&&sel.kind==='wall'?wallById(sel.id):null;
   if(a==='add-door'||a==='add-window'){if(!w)return;pushUndo();const G=geom(w),door=a==='add-door';
     w.openings.push({id:rid('o'),kind:door?'door':'window',offset:r1(G.L/2),width:door?80:100,height:door?210:120,sill:door?0:90,approx:false,note:''});save();refresh();}
@@ -951,7 +927,9 @@ pane.addEventListener('click',e=>{
   else if(a==='copy'){const t=$('#exp');const ok=()=>toast('JSON copied');
     try{navigator.clipboard.writeText(t.value).then(ok,()=>{t.select();toast('Press Ctrl+C to copy');});}catch(err){t.select();toast('Press Ctrl+C to copy');}}
   else if(a==='import'){importText($('#imp').value);}
-  else if(a==='reset'){if(!resetArm){resetArm=true;renderPanel();return;}resetArm=false;pushUndo();S=defaultModel();sel=null;afterLoad();toast('Reset to the original plan');}
+  else if(a==='reload-file'){fetch(DATA_FILE,{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(o=>{if(!valid(o))throw 0;pushUndo();S=normalize(o);store.lastSaved=fmtJSON(S);sel=null;syncControls();refresh();setStore('saved');toast('Reloaded house.json');}).catch(()=>toast('Could not read house.json'));}
+  else if(a==='download-json'){const url=URL.createObjectURL(new Blob([fmtJSON(S)],{type:'application/json'}));const l=document.createElement('a');l.href=url;l.download='house.json';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+  else if(a==='discard-local'){try{localStorage.removeItem(KEY);}catch(e){}store.local=false;fetch(DATA_FILE,{cache:'no-store'}).then(r=>r.json()).then(o=>{pushUndo();S=normalize(o);sel=null;syncControls();refresh();setStore();toast('Back to house.json');}).catch(()=>toast('Could not read house.json'));}
 });
 
 /* ---------- Keyboard ---------- */
@@ -977,7 +955,7 @@ try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',onTheme
 new MutationObserver(onTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{texCache.forEach(t=>t.dispose());texCache.clear();rebuild3D();});
 
-readTheme();syncControls();camPreset('iso');setTool('select');refresh();resize();
+readTheme();syncControls();camPreset('iso');setTool('select');refresh();resize();boot();
 (function loop(){requestAnimationFrame(loop);
   if(anim){const k=clamp((performance.now()-anim.t0)/anim.dur,0,1),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
     controls.target.lerpVectors(anim.ft,anim.tt,e);camera.position.lerpVectors(anim.fp,anim.tp,e);if(k>=1)anim=null;}

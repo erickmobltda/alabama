@@ -1,0 +1,12 @@
+{
+  "name": "unidade05-house-model",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive 3D model of the Unidade 05 townhouse with editable walls, rooms, junction boxes and conduits",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,1104 @@
+{
+  "version": 2,
+  "floors": [
+    {
+      "name": "Térreo",
+      "height": 290
+    },
+    {
+      "name": "Superior",
+      "height": 280
+    }
+  ],
+  "slab": 12,
+  "slabs": {
+    "ground": {
+      "outer": [
+        [0, -150],
+        [496, -150],
+        [496, 1695],
+        [0, 1695]
+      ],
+      "holes": [],
+      "top": 0,
+      "thickness": 4
+    },
+    "upper": {
+      "outer": [
+        [0, 0],
+        [496, 0],
+        [496, 1485],
+        [300, 1485],
+        [300, 1695],
+        [0, 1695]
+      ],
+      "holes": [
+        [
+          [245, 325],
+          [476, 325],
+          [476, 565],
+          [245, 565]
+        ],
+        [
+          [20, 428],
+          [145, 428],
+          [145, 565],
+          [20, 565]
+        ],
+        [
+          [170, 975],
+          [246, 975],
+          [246, 885],
+          [476, 885],
+          [476, 1475],
+          [300, 1475],
+          [300, 1245],
+          [245, 1195],
+          [170, 1195]
+        ]
+      ]
+    },
+    "roof": {
+      "outer": [
+        [0, 0],
+        [496, 0],
+        [496, 1695],
+        [0, 1695]
+      ],
+      "holes": [
+        [
+          [245, 325],
+          [476, 325],
+          [476, 565],
+          [245, 565]
+        ],
+        [
+          [20, 428],
+          [145, 428],
+          [145, 565],
+          [20, 565]
+        ]
+      ]
+    }
+  },
+  "stair": {
+    "width": 90,
+    "tread": 28,
+    "risers": 17,
+    "flight1": {
+      "x0": 386,
+      "x1": 476,
+      "yStart": 1253,
+      "treads": 10
+    },
+    "landing": {
+      "x0": 386,
+      "x1": 476,
+      "y0": 885,
+      "y1": 973
+    },
+    "flight2": {
+      "y0": 885,
+      "y1": 975,
+      "xStart": 386,
+      "treads": 5
+    },
+    "approx": true
+  },
+  "rooms": [
+    {
+      "id": "r1",
+      "floor": 0,
+      "name": "A.Serviço",
+      "area": "3,53 m²",
+      "x": 89,
+      "y": 128,
+      "bounds": [20, 0, 159, 266]
+    },
+    {
+      "id": "r2",
+      "floor": 0,
+      "name": "Lavabo",
+      "area": "1,93 m²",
+      "x": 85,
+      "y": 353,
+      "bounds": [20, 276, 145, 431]
+    },
+    {
+      "id": "r3",
+      "floor": 0,
+      "name": "Churrasqueira",
+      "area": "19,44 m²",
+      "x": 300,
+      "y": 280,
+      "bounds": [169, 0, 476, 565]
+    },
+    {
+      "id": "r4",
+      "floor": 0,
+      "name": "Cozinha",
+      "area": "6,18 m²",
+      "x": 372,
+      "y": 725,
+      "bounds": [270, 575, 476, 875]
+    },
+    {
+      "id": "r5",
+      "floor": 0,
+      "name": "Estar/Jantar",
+      "area": "26,97 m²",
+      "x": 140,
+      "y": 900,
+      "bounds": [20, 575, 476, 1195]
+    },
+    {
+      "id": "r6",
+      "floor": 0,
+      "name": "Garagem",
+      "area": "13,10 m²",
+      "x": 155,
+      "y": 1450,
+      "bounds": [20, 1205, 290, 1695]
+    },
+    {
+      "id": "r7",
+      "floor": 1,
+      "name": "Dormitório",
+      "area": "9,80 m²",
+      "x": 315,
+      "y": 165,
+      "bounds": [155, 10, 476, 315]
+    },
+    {
+      "id": "r8",
+      "floor": 1,
+      "name": "BWC",
+      "area": "3,12 m²",
+      "x": 85,
+      "y": 295,
+      "bounds": [20, 170, 145, 418]
+    },
+    {
+      "id": "r9",
+      "floor": 1,
+      "name": "BWC",
+      "area": "3,12 m²",
+      "x": 85,
+      "y": 700,
+      "bounds": [20, 575, 145, 825]
+    },
+    {
+      "id": "r10",
+      "floor": 1,
+      "name": "Circ.",
+      "area": "6,13 m²",
+      "x": 200,
+      "y": 720,
+      "bounds": [155, 325, 240, 975]
+    },
+    {
+      "id": "r11",
+      "floor": 1,
+      "name": "Dormitório",
+      "area": "6,60 m²",
+      "x": 365,
+      "y": 730,
+      "bounds": [255, 575, 476, 875]
+    },
+    {
+      "id": "r12",
+      "floor": 1,
+      "name": "Suíte",
+      "area": "14,71 m²",
+      "x": 90,
+      "y": 1300,
+      "bounds": [20, 835, 295, 1565]
+    },
+    {
+      "id": "r13",
+      "floor": 1,
+      "name": "Sacada",
+      "area": "3,36 m²",
+      "x": 160,
+      "y": 1635,
+      "bounds": [20, 1575, 295, 1690]
+    },
+    {
+      "id": "r14",
+      "floor": 1,
+      "name": "Vazio",
+      "area": "",
+      "x": 358,
+      "y": 445,
+      "bounds": [245, 325, 476, 565]
+    },
+    {
+      "id": "r15",
+      "floor": 1,
+      "name": "Vazio",
+      "area": "",
+      "x": 85,
+      "y": 496,
+      "bounds": [20, 428, 145, 565]
+    },
+    {
+      "id": "r16",
+      "floor": 1,
+      "name": "Vazio",
+      "area": "",
+      "x": 390,
+      "y": 1250,
+      "bounds": [170, 885, 476, 1475]
+    }
+  ],
+  "walls": [
+    {
+      "id": "g1",
+      "floor": 0,
+      "name": "Party wall (left)",
+      "x1": 10,
+      "y1": -83,
+      "x2": 10,
+      "y2": 1695,
+      "t": 20,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "Back end (−83) scaled from drawing",
+      "openings": []
+    },
+    {
+      "id": "g2",
+      "floor": 0,
+      "name": "Party wall (right)",
+      "x1": 486,
+      "y1": -150,
+      "x2": 486,
+      "y2": 1695,
+      "t": 20,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "g3",
+      "floor": 0,
+      "name": "A.Serviço back",
+      "x1": 20,
+      "y1": 5,
+      "x2": 164,
+      "y2": 5,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "Width derived from 3,53 m²",
+      "openings": [
+        {
+          "id": "o1",
+          "kind": "window",
+          "offset": 61,
+          "width": 100,
+          "height": 120,
+          "sill": 90,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "g4",
+      "floor": 0,
+      "name": "A.Serviço side",
+      "x1": 164,
+      "y1": 0,
+      "x2": 164,
+      "y2": 276,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "Position derived from area",
+      "openings": [
+        {
+          "id": "o2",
+          "kind": "door",
+          "offset": 216,
+          "width": 80,
+          "height": 210,
+          "sill": 0,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "g5",
+      "floor": 0,
+      "name": "A.Serviço / Lavabo",
+      "x1": 20,
+      "y1": 271,
+      "x2": 164,
+      "y2": 271,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "g6",
+      "floor": 0,
+      "name": "Lavabo side",
+      "x1": 150,
+      "y1": 276,
+      "x2": 150,
+      "y2": 436,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o3",
+          "kind": "door",
+          "offset": 115,
+          "width": 70,
+          "height": 210,
+          "sill": 0,
+          "approx": true,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "g7",
+      "floor": 0,
+      "name": "Lavabo back",
+      "x1": 20,
+      "y1": 436,
+      "x2": 155,
+      "y2": 436,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o4",
+          "kind": "window",
+          "offset": 58,
+          "width": 100,
+          "height": 50,
+          "sill": 170,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "g8",
+      "floor": 0,
+      "name": "Churrasqueira / Estar",
+      "x1": 20,
+      "y1": 570,
+      "x2": 476,
+      "y2": 570,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o5",
+          "kind": "door",
+          "offset": 100,
+          "width": 90,
+          "height": 210,
+          "sill": 0,
+          "approx": true,
+          "note": "Position scaled"
+        },
+        {
+          "id": "o6",
+          "kind": "window",
+          "offset": 315,
+          "width": 130,
+          "height": 100,
+          "sill": 110,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "g9",
+      "floor": 0,
+      "name": "Churrasqueira (grill)",
+      "x1": 416,
+      "y1": 41,
+      "x2": 476,
+      "y2": 41,
+      "t": 82,
+      "h": 220,
+      "type": "wall",
+      "approx": true,
+      "note": "Grill block 60×82; height assumed 220",
+      "openings": []
+    },
+    {
+      "id": "g10",
+      "floor": 0,
+      "name": "Cozinha / Estar",
+      "x1": 268,
+      "y1": 880,
+      "x2": 476,
+      "y2": 880,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "g11",
+      "floor": 0,
+      "name": "Garagem / Estar",
+      "x1": 20,
+      "y1": 1200,
+      "x2": 242,
+      "y2": 1200,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o7",
+          "kind": "window",
+          "offset": 105,
+          "width": 150,
+          "height": 120,
+          "sill": 90,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "g12",
+      "floor": 0,
+      "name": "Garagem chamfer",
+      "x1": 242,
+      "y1": 1200,
+      "x2": 295,
+      "y2": 1253,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "g13",
+      "floor": 0,
+      "name": "Garagem side",
+      "x1": 295,
+      "y1": 1253,
+      "x2": 295,
+      "y2": 1695,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o8",
+          "kind": "door",
+          "offset": 311,
+          "width": 142,
+          "height": 210,
+          "sill": 0,
+          "approx": true,
+          "note": "Passage 142 wide; head height assumed"
+        }
+      ]
+    },
+    {
+      "id": "g14",
+      "floor": 0,
+      "name": "Entrance",
+      "x1": 300,
+      "y1": 1488,
+      "x2": 476,
+      "y2": 1488,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o9",
+          "kind": "door",
+          "offset": 106,
+          "width": 130,
+          "height": 250,
+          "sill": 0,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u1",
+      "floor": 1,
+      "name": "Party wall (left)",
+      "x1": 10,
+      "y1": 0,
+      "x2": 10,
+      "y2": 1695,
+      "t": 20,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u2",
+      "floor": 1,
+      "name": "Party wall (right)",
+      "x1": 486,
+      "y1": -150,
+      "x2": 486,
+      "y2": 1695,
+      "t": 20,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u3",
+      "floor": 1,
+      "name": "Dormitório back",
+      "x1": 150,
+      "y1": 5,
+      "x2": 476,
+      "y2": 5,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o10",
+          "kind": "window",
+          "offset": 165,
+          "width": 150,
+          "height": 120,
+          "sill": 90,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u4",
+      "floor": 1,
+      "name": "BWC / Dormitório",
+      "x1": 150,
+      "y1": 0,
+      "x2": 150,
+      "y2": 428,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o11",
+          "kind": "door",
+          "offset": 383,
+          "width": 70,
+          "height": 210,
+          "sill": 0,
+          "approx": true,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u5",
+      "floor": 1,
+      "name": "BWC window wall",
+      "x1": 20,
+      "y1": 165,
+      "x2": 150,
+      "y2": 165,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "",
+      "openings": [
+        {
+          "id": "o12",
+          "kind": "window",
+          "offset": 63,
+          "width": 100,
+          "height": 50,
+          "sill": 160,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u6",
+      "floor": 1,
+      "name": "BWC / Vazio",
+      "x1": 20,
+      "y1": 423,
+      "x2": 150,
+      "y2": 423,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u7",
+      "floor": 1,
+      "name": "Dormitório front",
+      "x1": 155,
+      "y1": 320,
+      "x2": 476,
+      "y2": 320,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o13",
+          "kind": "door",
+          "offset": 42,
+          "width": 80,
+          "height": 210,
+          "sill": 0,
+          "approx": true,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u8",
+      "floor": 1,
+      "name": "Vazio glass (circulation)",
+      "x1": 240,
+      "y1": 325,
+      "x2": 240,
+      "y2": 565,
+      "t": 10,
+      "h": null,
+      "type": "glass",
+      "approx": true,
+      "note": "Fechamento com vidro, position scaled",
+      "openings": []
+    },
+    {
+      "id": "u9",
+      "floor": 1,
+      "name": "Vazio glass (light well)",
+      "x1": 150,
+      "y1": 428,
+      "x2": 150,
+      "y2": 565,
+      "t": 10,
+      "h": null,
+      "type": "glass",
+      "approx": true,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u10",
+      "floor": 1,
+      "name": "BWC 2 back",
+      "x1": 20,
+      "y1": 570,
+      "x2": 150,
+      "y2": 570,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o14",
+          "kind": "window",
+          "offset": 63,
+          "width": 100,
+          "height": 50,
+          "sill": 160,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u11",
+      "floor": 1,
+      "name": "Dormitório 2 back",
+      "x1": 240,
+      "y1": 570,
+      "x2": 476,
+      "y2": 570,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o15",
+          "kind": "window",
+          "offset": 155,
+          "width": 130,
+          "height": 120,
+          "sill": 90,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u12",
+      "floor": 1,
+      "name": "BWC 2 side",
+      "x1": 150,
+      "y1": 570,
+      "x2": 150,
+      "y2": 830,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u13",
+      "floor": 1,
+      "name": "Dormitório 2 side",
+      "x1": 250,
+      "y1": 575,
+      "x2": 250,
+      "y2": 831,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o16",
+          "kind": "door",
+          "offset": 45,
+          "width": 80,
+          "height": 210,
+          "sill": 0,
+          "approx": true,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u14",
+      "floor": 1,
+      "name": "Dormitório 2 chamfer",
+      "x1": 250,
+      "y1": 831,
+      "x2": 294,
+      "y2": 880,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u15",
+      "floor": 1,
+      "name": "Dormitório 2 front",
+      "x1": 294,
+      "y1": 880,
+      "x2": 476,
+      "y2": 880,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u16",
+      "floor": 1,
+      "name": "BWC 2 / Suíte",
+      "x1": 20,
+      "y1": 830,
+      "x2": 150,
+      "y2": 830,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": [
+        {
+          "id": "o17",
+          "kind": "door",
+          "offset": 85,
+          "width": 70,
+          "height": 210,
+          "sill": 0,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u17",
+      "floor": 1,
+      "name": "Suíte chamfer (BWC)",
+      "x1": 150,
+      "y1": 830,
+      "x2": 165,
+      "y2": 845,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u18",
+      "floor": 1,
+      "name": "Suíte side (circulation)",
+      "x1": 165,
+      "y1": 845,
+      "x2": 165,
+      "y2": 1195,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "Suíte door type/position unclear on plan",
+      "openings": [
+        {
+          "id": "o18",
+          "kind": "door",
+          "offset": 65,
+          "width": 80,
+          "height": 210,
+          "sill": 0,
+          "approx": true,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u19",
+      "floor": 1,
+      "name": "Suíte step",
+      "x1": 165,
+      "y1": 1195,
+      "x2": 245,
+      "y2": 1195,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u20",
+      "floor": 1,
+      "name": "Suíte chamfer (vazio)",
+      "x1": 245,
+      "y1": 1195,
+      "x2": 295,
+      "y2": 1245,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u21",
+      "floor": 1,
+      "name": "Suíte side (vazio)",
+      "x1": 295,
+      "y1": 1245,
+      "x2": 295,
+      "y2": 1570,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u22",
+      "floor": 1,
+      "name": "Suíte / Sacada",
+      "x1": 20,
+      "y1": 1570,
+      "x2": 300,
+      "y2": 1570,
+      "t": 10,
+      "h": null,
+      "type": "wall",
+      "approx": true,
+      "note": "",
+      "openings": [
+        {
+          "id": "o19",
+          "kind": "door",
+          "offset": 129,
+          "width": 160,
+          "height": 210,
+          "sill": 0,
+          "approx": false,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "u23",
+      "floor": 1,
+      "name": "Sacada railing",
+      "x1": 20,
+      "y1": 1692,
+      "x2": 300,
+      "y2": 1692,
+      "t": 5,
+      "h": 110,
+      "type": "glass",
+      "approx": true,
+      "note": "Railing type and height assumed",
+      "openings": []
+    },
+    {
+      "id": "u24",
+      "floor": 1,
+      "name": "Sacada railing (side)",
+      "x1": 297,
+      "y1": 1575,
+      "x2": 297,
+      "y2": 1692,
+      "t": 5,
+      "h": 110,
+      "type": "glass",
+      "approx": true,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u25",
+      "floor": 1,
+      "name": "Vidro fixo (façade)",
+      "x1": 300,
+      "y1": 1480,
+      "x2": 476,
+      "y2": 1480,
+      "t": 10,
+      "h": null,
+      "type": "glass",
+      "approx": false,
+      "note": "",
+      "openings": []
+    },
+    {
+      "id": "u26",
+      "floor": 1,
+      "name": "Circulation guard",
+      "x1": 170,
+      "y1": 975,
+      "x2": 246,
+      "y2": 975,
+      "t": 5,
+      "h": 110,
+      "type": "glass",
+      "approx": true,
+      "note": "Guard assumed at stair arrival",
+      "openings": []
+    }
+  ],
+  "boxes": [
+    {
+      "id": "b1",
+      "label": "Outlet (example)",
+      "wallId": "g11",
+      "along": 20,
+      "z": 30,
+      "side": -1
+    },
+    {
+      "id": "b2",
+      "label": "Switch (example)",
+      "wallId": "g11",
+      "along": 200,
+      "z": 110,
+      "side": -1
+    },
+    {
+      "id": "b3",
+      "label": "Outlet (example)",
+      "wallId": "g8",
+      "along": 215,
+      "z": 30,
+      "side": 1
+    }
+  ],
+  "conduits": [
+    {
+      "id": "c1",
+      "a": "b1",
+      "b": "b2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c2",
+      "a": "b2",
+      "b": "b3",
+      "mode": "orthogonal"
+    }
+  ]
+}
