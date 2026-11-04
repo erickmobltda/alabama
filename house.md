@@ -1,6 +1,6 @@
 # Unidade 05 · house model
 
-Generated 2026-11-04 16:26 from the interactive 3D model. Source drawings: floor plans (térreo, superior) and sections Corte AA / Corte BB at 1:50. Two-floor attached townhouse.
+Generated 2026-11-04 16:44 from the interactive 3D model. Source drawings: floor plans (térreo, superior) and sections Corte AA / Corte BB at 1:50. Two-floor attached townhouse.
 
 ## How to read this file
 
@@ -38,7 +38,7 @@ Stair (approximate): 90 wide, 17 risers of 17.8 cm, 28 cm treads. First flight: 
 | r9 | Superior | BWC | 3,12 m² | 20–145 | 575–825 | 85, 700 |
 | r10 | Superior | Circ. | 6,13 m² | 155–240 | 325–975 | 200, 720 |
 | r11 | Superior | Dormitório | 6,60 m² | 255–476 | 575–875 | 365, 730 |
-| r12 | Superior | Suíte | 14,71 m² | 20–295 | 835–1565 | 90, 1300 |
+| r12 | Superior | Suíte Casal | 14,71 m² | 20–295 | 835–1565 | 90, 1300 |
 | r13 | Superior | Sacada | 3,36 m² | 20–295 | 1575–1690 | 160, 1635 |
 | r14 | Superior | Vazio | — | 245–476 | 325–565 | 358, 445 |
 | r15 | Superior | Vazio | — | 20–145 | 428–565 | 85, 496 |
@@ -98,22 +98,25 @@ Stair (approximate): 90 wide, 17 risers of 17.8 cm, 28 cm treads. First flight: 
 
 ## Junction boxes
 
-3 boxes. Boxes are 12 × 12 cm squares mounted on a wall face.
+5 boxes. Boxes are 12 × 12 cm squares mounted on a wall face.
 
 | ID | Label | Floor | Room | Wall | Along | z | Face | Faces | Plan x, y | Abs. elevation | Conduits |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | b1 | Outlet (example) | Térreo | Estar/Jantar (r5) | g11 Garagem / Estar | 20 | 30 | B | −y (toward back) | 40, 1194 | 30 | 1 |
 | b2 | Switch (example) | Térreo | Estar/Jantar (r5) | g11 Garagem / Estar | 200 | 110 | B | −y (toward back) | 220, 1194 | 110 | 2 |
 | b3 | Outlet (example) | Térreo | Estar/Jantar (r5) | g8 Churrasqueira / Estar | 215 | 30 | A | +y (toward street) | 235, 576 | 30 | 1 |
+| b0r2oth | Box 4 | Superior | Vazio (r16) | u19 Suíte step | 36 | 153 | A | +y (toward street) | 201, 1201 | 455 | 1 |
+| bplj8ak | Box 5 | Superior | Vazio (r16) | u19 Suíte step | 40 | 38 | A | +y (toward street) | 205, 1201 | 340 | 1 |
 
 ## Conduits
 
-2 conduits, 12.77 m in total. Orthogonal routing runs on the wall face; between different walls it rises to 20 cm below the ceiling, crosses through the ceiling/slab, and drops to the other box. Straight routing is a direct line.
+3 conduits, 13.96 m in total. Orthogonal routing runs on the wall face; between different walls it rises to 20 cm below the ceiling, crosses through the ceiling/slab, and drops to the other box. Straight routing is a direct line.
 
 | ID | From | To | Routing | Length (m) | Path points (x, y, abs. elevation) |
 |---|---|---|---|---|---|
 | c1 | b1 Outlet (example) | b2 Switch (example) | orthogonal | 2.60 | (40, 1194, 30) → (40, 1194, 110) → (220, 1194, 110) |
 | c2 | b2 Switch (example) | b3 Outlet (example) | orthogonal | 10.17 | (220, 1194, 110) → (220, 1194, 270) → (235, 576, 270) → (235, 576, 30) |
+| c9h7hyg | bplj8ak Box 5 | b0r2oth Box 4 | orthogonal | 1.19 | (205, 1201, 340) → (205, 1201, 455) → (201, 1201, 455) |
 
 ## Not modelled
 

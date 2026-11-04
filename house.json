@@ -208,7 +208,7 @@
     {
       "id": "r12",
       "floor": 1,
-      "name": "Suíte",
+      "name": "Suíte Casal",
       "area": "14,71 m²",
       "x": 90,
       "y": 1300,
@@ -1085,6 +1085,22 @@
       "along": 215,
       "z": 30,
       "side": 1
+    },
+    {
+      "id": "b0r2oth",
+      "label": "Box 4",
+      "wallId": "u19",
+      "along": 35.9,
+      "z": 152.6,
+      "side": 1
+    },
+    {
+      "id": "bplj8ak",
+      "label": "Box 5",
+      "wallId": "u19",
+      "along": 40,
+      "z": 37.8,
+      "side": 1
     }
   ],
   "conduits": [
@@ -1098,6 +1114,12 @@
       "id": "c2",
       "a": "b2",
       "b": "b3",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c9h7hyg",
+      "a": "bplj8ak",
+      "b": "b0r2oth",
       "mode": "orthogonal"
     }
   ]
