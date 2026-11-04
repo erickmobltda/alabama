@@ -210,7 +210,7 @@ function afterLoad(){if(sel&&!getSel())sel=null;syncControls();refresh();save();
 function fmtJSON(o){return JSON.stringify(o,null,2).replace(/\[\s+([-\d.,\s]+?)\s+\]/g,(m,inner)=>'['+inner.split(/,\s*/).map(x=>x.trim()).join(', ')+']')+'\n';}
 function save(){
   if(store.mode==='file'){clearTimeout(store.timer);setStore('saving');store.timer=setTimeout(saveToFile,500);return;}
-  try{localStorage.setItem(KEY,JSON.stringify(S));store.local=true;}catch(e){}
+  store.local=true; // read-only copy: changes live only in this tab
   setStore();
 }
 async function saveToFile(){
@@ -222,16 +222,16 @@ async function saveToFile(){
     store.lastSaved=json;setStore('saved');
   }catch(e){setStore('error',e.message);toast('Could not save house.json');}
 }
-function loadLocal(){try{const t=localStorage.getItem(KEY);if(!t)return null;const o=JSON.parse(t);return valid(o)?normalize(o):null;}catch(e){return null;}}
 function setStore(state,msg){
   if(state!==undefined){store.state=state;store.msg=msg||'';}
   const el=document.getElementById('store');if(!el)return;
   let t,c='';
   if(store.mode==='file'){t=store.state==='saving'?'Saving to house.json…':store.state==='error'?'Not saved: '+store.msg:'Saved to house.json';c=store.state==='error'?'err':store.state==='saving'?'busy':'ok';}
-  else if(store.mode==='static'){t=store.local?'Read-only copy · edits kept in this browser only':'Read-only copy of house.json';c='ro';}
-  else{t=store.local?'house.json not found · showing edits from this browser':'house.json not found · start the local server';c='err';}
+  else if(store.mode==='static'){t=store.local?'Read-only · changes in this tab are not saved':'Showing the published house.json';c='ro';}
+  else{t='Open through the server: node server.js, then http://127.0.0.1:8000';c='err';}
   el.textContent=t;el.dataset.s=c;
 }
+window.addEventListener('beforeunload',e=>{if(store.mode==='file'&&store.state==='saving'){e.preventDefault();e.returnValue='';}});
 async function boot(){
   let fileData=null,server=false;
   try{const r=await fetch(DATA_FILE,{cache:'no-store'});if(r.ok){const o=await r.json();if(valid(o))fileData=o;}}catch(e){}
@@ -242,11 +242,11 @@ async function boot(){
     store.state='saved';
   }else{
     store.mode=fileData?'static':'none';
-    const local=loadLocal();
-    if(local){S=local;store.local=true;}else if(fileData)S=normalize(fileData);
+    if(fileData)S=normalize(fileData);
   }
+  try{localStorage.removeItem(KEY);}catch(e){} // older versions kept browser copies; house.json is the only source now
   setStore();syncControls();refresh();
-  if(store.mode==='none'&&!store.local)toast('house.json not found. Run "node server.js" in the repo folder.');
+  if(store.mode==='none')toast(location.protocol==='file:'?'Browsers cannot read house.json from file://. Run "node server.js" and open http://127.0.0.1:8000':'house.json not found next to index.html');
 }
 function valid(o){return o&&Array.isArray(o.walls)&&Array.isArray(o.floors)&&o.floors.length===2;}
 function normalize(o){
@@ -842,8 +842,8 @@ function renderData(){
     ${fileMode?`<p class="muted">Every change is written to <b>house.json</b> (and the AI brief <b>house.md</b>) in your repository folder. Commit those files to keep the history.</p>
       <div class="btns"><button class="btn" data-act="reload-file">Reload from house.json</button></div>
       <p class="muted">Use reload after editing house.json by hand or after a git checkout.</p>`
-    :`<p class="muted">${store.mode==='static'?'This copy is read-only (for example GitHub Pages), so edits stay in this browser.':'house.json could not be loaded. Run <b>node server.js</b> in the repository folder and open the address it prints.'} To keep edits, download house.json and commit it.</p>
-      <div class="btns"><button class="btn primary" data-act="download-json">Download house.json</button>${store.local&&store.mode==='static'?'<button class="btn danger" data-act="discard-local">Discard browser edits</button>':''}</div>`}
+    :`<p class="muted">${store.mode==='static'?'This is the published, read-only copy. It always shows the committed house.json; changes you make here disappear when you reload. To edit for real, run <b>node server.js</b> locally, edit at http://127.0.0.1:8000, then commit and push.':'house.json could not be loaded. Run <b>node server.js</b> in the repository folder and open <b>http://127.0.0.1:8000</b>.'}</p>
+      ${store.mode==='static'?'<div class="btns"><button class="btn" data-act="download-json">Download these changes as house.json</button></div>':''}`}
     <h3>For AI agents</h3>
     <p class="muted">Markdown brief of the current model: coordinate system, floors, stair, rooms, every wall and opening, where each box is and each conduit's route and length.${fileMode?' It is also saved as house.md on every change.':''}</p>
     <label class="fld full"><span>house.md</span><textarea id="mdOut" readonly>${esc(buildMd(!fileMode))}</textarea></label>
@@ -929,7 +929,7 @@ pane.addEventListener('click',e=>{
   else if(a==='import'){importText($('#imp').value);}
   else if(a==='reload-file'){fetch(DATA_FILE,{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(o=>{if(!valid(o))throw 0;pushUndo();S=normalize(o);store.lastSaved=fmtJSON(S);sel=null;syncControls();refresh();setStore('saved');toast('Reloaded house.json');}).catch(()=>toast('Could not read house.json'));}
   else if(a==='download-json'){const url=URL.createObjectURL(new Blob([fmtJSON(S)],{type:'application/json'}));const l=document.createElement('a');l.href=url;l.download='house.json';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-  else if(a==='discard-local'){try{localStorage.removeItem(KEY);}catch(e){}store.local=false;fetch(DATA_FILE,{cache:'no-store'}).then(r=>r.json()).then(o=>{pushUndo();S=normalize(o);sel=null;syncControls();refresh();setStore();toast('Back to house.json');}).catch(()=>toast('Could not read house.json'));}
+
 });
 
 /* ---------- Keyboard ---------- */

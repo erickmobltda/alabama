@@ -35,8 +35,14 @@ The page detects how it was opened and shows the result under the title:
 | Opened via | Loads from | Saves to |
 |---|---|---|
 | `node server.js` | `house.json` | `house.json` + `house.md` (green dot) |
-| GitHub Pages or any static host | `house.json` | This browser only (blue dot). Use **Data → Download house.json** and commit it to keep changes. |
-| Double-clicking `index.html` (`file://`) | Nothing: browsers block reading local files from a page | This browser only. Use the server instead. |
+| GitHub Pages or any static host | The committed `house.json` | Nowhere (blue dot). Changes last until you reload. |
+| Double-clicking `index.html` (`file://`) | Nothing: browsers block reading local files from a page | Nowhere. Use the server instead. |
+
+## Workflow
+
+1. `node server.js`, then edit at http://127.0.0.1:8000. Every change lands in `house.json` and `house.md`.
+2. `git add house.json house.md && git commit -m "…" && git push`
+3. GitHub Pages redeploys and shows the new `house.json` once the deployment in the Actions tab finishes.
 
 If you edit `house.json` by hand or switch branches while the page is open, use **Data → Reload from house.json**.
 
@@ -137,4 +143,4 @@ conduits[]  {id, a, b, mode ("orthogonal"|"straight")}
 3. Under **Build and deployment**, choose **Deploy from a branch**, select your default branch and the `/ (root)` folder, and save.
 4. The site is served at `https://<user>.github.io/<repo>/` once the deployment finishes.
 
-The published site reads the committed `house.json` and is read-only: edits made there stay in the visitor's browser.
+The published site always shows the committed `house.json` and is read-only: anything changed there is gone on reload.
