@@ -57,6 +57,7 @@ The JSON is formatted with one property per line and coordinate pairs on one lin
 - Wall-height sliders per floor. Raising the ground floor lifts the whole upper floor.
 - "Wall cut" slider to lower all walls and look inside.
 - Approximate measurements are tinted amber.
+- See past walls: Alt/Option-click a wall to make it see-through, Alt/Option+Shift-click to hide it, or use **See-through** / **Hide wall** in its inspector. **X-ray walls** (key X) makes every wall see-through. See-through walls let clicks pass, so you can select, drag and edit boxes, conduits and joints behind them. **Show all walls** restores everything. This is a view setting and is not saved to `house.json`.
 
 **Walls and openings**
 - Draw walls on the selected floor, snapping to a 5 cm grid and to wall ends (Shift keeps them straight).
@@ -91,6 +92,9 @@ The JSON is formatted with one property per line and coordinate pairs on one lin
 | V / W / B / L / C | Select / Wall / Box / Ceiling / Conduit tool |
 | G / R | Move / rotate selected wall |
 | Delete, Backspace | Delete selection |
+| X | X-ray: all walls see-through |
+| H | Hide selected wall |
+| Alt/Option-click, + Shift | Make a wall see-through, or hide it |
 | Esc | Stop drawing, clear selection |
 | Ctrl/Cmd + Z | Undo |
 | Ctrl/Cmd + Shift + Z, Ctrl/Cmd + Y | Redo |

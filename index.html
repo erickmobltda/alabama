@@ -109,6 +109,7 @@ h3{font:600 15px/1 var(--font-d);letter-spacing:.06em;text-transform:uppercase;m
 .stat{border:1px solid var(--line);border-radius:6px;padding:8px}
 .stat b{display:block;font:500 18px var(--font-m);font-variant-numeric:tabular-nums}
 .stat span{font-size:11.5px;color:var(--muted)}
+.wvis{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--muted)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 ul.notes{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;line-height:1.5;display:flex;flex-direction:column;gap:4px}
@@ -166,7 +167,9 @@ ul.notes{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;line-hei
           <label><input type="checkbox" id="vRoof"> Roof slab</label>
           <label><input type="checkbox" id="vLabels" checked> Labels</label>
           <label><input type="checkbox" id="vApprox" checked> Mark approximate</label>
+          <label><input type="checkbox" id="vXray"> X-ray walls</label>
         </div>
+        <div id="wvis" class="wvis" hidden><span id="wvisTxt"></span><button class="btn sm" id="wvisAll">Show all walls</button></div>
         <div class="slider"><label for="hG">Térreo walls</label><input type="range" id="hG" min="200" max="400" step="5"><output id="hGo"></output></div>
         <div class="slider"><label for="hU">Superior walls</label><input type="range" id="hU" min="200" max="400" step="5"><output id="hUo"></output></div>
         <div class="slider"><label for="hCut">Wall cut</label><input type="range" id="hCut" min="10" max="100" step="1"><output id="hCuto"></output></div>
@@ -203,7 +206,7 @@ const DATA_FILE='house.json';
 // Used only to migrate files saved before walls had an "exterior" flag: party walls and front/back façades
 const DEFAULT_EXTERIOR=['g1','g2','g3','g14','u1','u2','u3','u22','u23','u24','u25'];
 const store={mode:'none',state:'',msg:'',timer:null,lastSaved:'',local:false};
-const view={ctype:{power:true,lighting:true,communication:true},show:[true,true],exterior:true,roof:false,labels:true,approx:true,cut:1,edit:0,tool:'select',gizmo:null,tab:'ins'};
+const view={wallVis:{},xray:false,ctype:{power:true,lighting:true,communication:true},show:[true,true],exterior:true,roof:false,labels:true,approx:true,cut:1,edit:0,tool:'select',gizmo:null,tab:'ins'};
 let sel=null; // {kind,id}
 const undoStack=[],redoStack=[];
 function pushUndo(){undoStack.push(JSON.stringify(S));if(undoStack.length>120)undoStack.shift();redoStack.length=0;syncHistory();}
@@ -328,6 +331,9 @@ const M={
   joint:new THREE.MeshBasicMaterial({depthTest:false,transparent:true}),
   conSel:new THREE.MeshStandardMaterial({roughness:.5}),
   edge:new THREE.LineBasicMaterial({transparent:true,opacity:.35}),
+  edgeGhost:new THREE.LineBasicMaterial({transparent:true,opacity:.12,depthWrite:false}),
+  ghost:new THREE.MeshStandardMaterial({transparent:true,opacity:.1,depthWrite:false,roughness:.9}),
+  ghostSel:new THREE.MeshStandardMaterial({transparent:true,opacity:.28,depthWrite:false,roughness:.9}),
   preview:new THREE.MeshBasicMaterial({transparent:true,opacity:.45,depthWrite:false}),
   snap:new THREE.MeshBasicMaterial({depthTest:false,transparent:true})
 };
@@ -342,7 +348,7 @@ function readTheme(){
   M.slab.color.set(THEME.slab);M.slabUp.color.set(THEME.slab).offsetHSL(0,0,.04);M.roof.color.set(THEME.slab).offsetHSL(0,0,-.05);
   M.box.color.set(THEME.accent);M.boxSel.color.set(THEME.sel);
   M.con.color.set(THEME.conduit);M.conP.color.set(THEME.power);M.conC.color.set(THEME.comm);M.conSel.color.set(THEME.sel);M.joint.color.set(THEME.sel);
-  M.edge.color.set(THEME.ink);M.preview.color.set(THEME.sel);M.snap.color.set(THEME.accent);
+  M.edge.color.set(THEME.ink);M.edgeGhost.color.set(THEME.ink);M.ghost.color.set(THEME.wall);M.ghostSel.color.set(THEME.sel);M.preview.color.set(THEME.sel);M.snap.color.set(THEME.accent);
   if(grid){scene.remove(grid);grid.geometry.dispose();}
   grid=new THREE.GridHelper(4000,80,new THREE.Color(THEME.grid),new THREE.Color(THEME.grid));
   grid.position.set(248,-6,772);scene.add(grid);
@@ -392,16 +398,16 @@ function buildWall(w){
   const G=geom(w),H=dispH(w),grp=new THREE.Group();
   grp.position.set(w.x1,base(w.floor),w.y1);grp.rotation.y=G.theta;
   const isSel=sel&&sel.kind==='wall'&&sel.id===w.id;
-  const glass=w.type==='glass';
-  const mat=isSel?(glass?M.glassSel:M.sel):(view.approx&&w.approx)?(glass?M.glassApprox:M.approx):(glass?M.glass:M.wall);
+  const glass=w.type==='glass',see=view.xray||view.wallVis[w.id]==='ghost';
+  const mat=see?(isSel?M.ghostSel:M.ghost):isSel?(glass?M.glassSel:M.sel):(view.approx&&w.approx)?(glass?M.glassApprox:M.approx):(glass?M.glass:M.wall);
   for(const p of wallPieces(w,H)){
     const th=p.pane?2:w.t;
-    const m=new THREE.Mesh(new THREE.BoxGeometry(p.b-p.a,p.y1-p.y0,th),p.pane?M.pane:mat);
+    const m=new THREE.Mesh(new THREE.BoxGeometry(p.b-p.a,p.y1-p.y0,th),p.pane?(see?M.ghost:M.pane):mat);
     m.position.set((p.a+p.b)/2,p.y0+(p.y1-p.y0)/2,0);
-    if(!glass&&!p.pane){m.castShadow=true;m.receiveShadow=true;}
-    m.userData={kind:'wall',id:w.id,pane:!!p.pane,floor:w.floor};
+    if(!glass&&!p.pane&&!see){m.castShadow=true;m.receiveShadow=true;}
+    m.userData={kind:'wall',id:w.id,pane:!!p.pane,floor:w.floor,see};
     grp.add(m);pickables.push(m);
-    if(!p.pane)addEdges(m,grp);
+    if(!p.pane){const e=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),see?M.edgeGhost:M.edge);e.position.copy(m.position);grp.add(e);}
   }
   floorG[w.floor].add(grp);
 }
@@ -481,7 +487,7 @@ function rebuild3D(){
   if(sl.roof&&sl.roof.outer&&view.roof&&view.show[1])world.add(slabMesh(sl.roof,base(1)+floorH(1),S.slab,M.roof));
   buildStairs();
   const shown=w=>w&&(view.exterior||!w.exterior);
-  S.walls.filter(shown).forEach(buildWall);
+  S.walls.filter(w=>shown(w)&&view.wallVis[w.id]!=='hidden').forEach(buildWall);
   S.rooms.forEach(r=>{
     const isSel=sel&&sel.kind==='room'&&sel.id===r.id;
     if(view.labels||isSel){
@@ -501,7 +507,7 @@ function rebuild3D(){
   S.conduits.filter(c=>view.ctype[c.type]!==false&&bShown(boxById(c.a))&&bShown(boxById(c.b))).forEach(buildConduit);
   placeGizmo();
 }
-function refresh(){rebuild3D();renderPanel();syncToolbar();}
+function refresh(){rebuild3D();renderPanel();syncToolbar();syncWallVis();}
 
 /* ---------- Gizmo (move / rotate walls) ---------- */
 const tc=new THREE.TransformControls(camera,cv);
@@ -564,7 +570,7 @@ cv.addEventListener('pointerdown',e=>{
 },true);
 cv.addEventListener('dblclick',e=>{
   if(view.tool!=='select')return;
-  const h=pick(e,u=>u.kind==='conduit');if(!h)return;
+  const h=pick(e,u=>u.kind&&!(u.kind==='wall'&&u.see));if(!h||h.object.userData.kind!=='conduit')return;
   const c=conById(h.object.userData.id);if(!c)return;
   pushUndo();if(c.mode!=='custom')materialize(c);
   c.points.splice(Math.max(0,h.object.userData.seg-1),0,{x:r1(h.point.x),y:r1(h.point.z),z:r1(h.point.y)});
@@ -586,7 +592,7 @@ cv.addEventListener('pointermove',e=>{
     if(!boxDrag.moved){undoStack.push(boxDrag.snap);redoStack.length=0;boxDrag.moved=true;sel={kind:'box',id:boxDrag.id};}
     const b=boxById(boxDrag.id);if(!b)return;
     if(isCeil(b)){const p=planePoint(e,b.floor);if(p){b.x=Math.round(p.x);b.y=Math.round(p.z);rebuild3D();setReadout(b.label+' · ceiling '+b.x+', '+b.y);}}
-    else{const h=pick(e,u=>u.kind==='wall'&&!u.pane);if(h){placeOnWall(b,h);rebuild3D();setReadout(b.label+' · '+Math.round(b.along)+' along · '+Math.round(b.z)+' high');}}
+    else{const h=pick(e,u=>u.kind==='wall'&&!u.pane&&(!u.see||view.xray));if(h){placeOnWall(b,h);rebuild3D();setReadout(b.label+' · '+Math.round(b.along)+' along · '+Math.round(b.z)+' high');}}
     return;
   }
   if(view.tool==='wall'){
@@ -623,7 +629,12 @@ function placeOnWall(b,h){
 function onClick(e){
   const t=view.tool;
   if(t==='select'){
-    const h=pick(e,u=>u.kind);
+    if(e.altKey){
+      const hw=pick(e,u=>u.kind&&!(u.kind==='wall'&&u.see));
+      if(hw&&hw.object.userData.kind==='wall'){const id=hw.object.userData.id;view.wallVis[id]=e.shiftKey?'hidden':'ghost';if(sel&&sel.id===id)sel=null;refresh();toast((e.shiftKey?'Hidden: ':'See-through: ')+wallById(id).name);}
+      return;
+    }
+    const h=pick(e,u=>u.kind&&!(u.kind==='wall'&&u.see));
     sel=h?{kind:h.object.userData.kind==='joint'?'conduit':h.object.userData.kind,id:h.object.userData.id}:null;
     if(!sel||sel.kind!=='wall')view.gizmo=null;
     if(sel)setTab('ins');refresh();return;
@@ -638,7 +649,7 @@ function onClick(e){
     S.walls.push(w);sel={kind:'wall',id:w.id};wallStart=s;save();refresh();return;
   }
   if(t==='box'){
-    const h=pick(e,u=>u.kind==='wall'&&!u.pane);
+    const h=pick(e,u=>u.kind==='wall'&&!u.pane&&(!u.see||view.xray));
     if(!h){toast('Click on a wall face to place a box');return;}
     pushUndo();
     const b={id:rid('b'),label:'Box '+(S.boxes.length+1),mount:'wall',kind:'outlet',circuit:'',approx:false,wallId:'',along:0,z:0,side:1};
@@ -677,7 +688,7 @@ function deleteSel(){
 
 /* ---------- UI: toolbar, view controls ---------- */
 const HINTS={
-  select:'Drag to orbit · right-drag or two fingers to pan · scroll to zoom. Click a wall, box or conduit to edit it; drag a box to slide it along walls.',
+  select:'Drag to orbit · right-drag or two fingers to pan · scroll to zoom. Click a wall, box or conduit to edit it; drag a box to slide it along walls. Alt/Option-click a wall to see through it (add Shift to hide it); X toggles x-ray for all walls.',
   wall:'Click the start point, then the end point on the active floor. Snaps to 5 cm and to wall ends; hold Shift for straight walls. Esc stops drawing.',
   box:'Click any wall face to place a junction box.',
   ceil:'Click a spot on the active floor to put a ceiling box (light point) above it. Hide Superior to see Térreo ceiling boxes.',
@@ -727,6 +738,13 @@ $('#vExt').onchange=e=>{view.exterior=e.target.checked;refresh();};
 $('#vRoof').onchange=e=>{view.roof=e.target.checked;refresh();};
 $('#vLabels').onchange=e=>{view.labels=e.target.checked;refresh();};
 $('#vApprox').onchange=e=>{view.approx=e.target.checked;refresh();};
+$('#vXray').onchange=e=>{view.xray=e.target.checked;refresh();};
+$('#wvisAll').onclick=()=>{view.wallVis={};refresh();toast('All walls visible');};
+function syncWallVis(){
+  const v=Object.entries(view.wallVis).filter(([id])=>wallById(id)),g=v.filter(x=>x[1]==='ghost').length,h=v.filter(x=>x[1]==='hidden').length;
+  $('#wvis').hidden=!(g||h);$('#wvisTxt').textContent=[g?g+' see-through':'',h?h+' hidden':''].filter(Boolean).join(' · ');
+  $('#vXray').checked=view.xray;
+}
 let sliderDirty=false;
 function heightSlider(id,f){
   const el=$(id);
@@ -785,6 +803,7 @@ function renderPanel(){
       <div class="checks"><label class="chk"><input type="checkbox" data-scope="wall" data-id="${w.id}" data-f="approx"${w.approx?' checked':''}> Approximate measurement</label>
       <label class="chk"><input type="checkbox" data-scope="wall" data-id="${w.id}" data-f="exterior"${w.exterior?' checked':''}> Exterior wall</label></div>
       <div class="btns"><button class="btn sm" data-act="gizmo-move" aria-pressed="${view.gizmo==='translate'}">Move</button><button class="btn sm" data-act="gizmo-rot" aria-pressed="${view.gizmo==='rotate'}">Rotate</button><button class="btn sm" data-act="flip">Swap ends</button></div>
+      <div class="btns"><button class="btn sm" data-act="wall-ghost" aria-pressed="${view.wallVis[w.id]==='ghost'}">See-through</button><button class="btn sm" data-act="wall-hide">Hide wall</button></div>
       <h3>Openings</h3>
       <p class="muted">Offset is the opening centre, measured from the wall start. Sizes follow the plan notation width × height / sill.</p>
       ${w.openings.map(p=>`<div class="op">
@@ -1030,6 +1049,8 @@ pane.addEventListener('click',e=>{
     w.openings.push({id:rid('o'),kind:door?'door':'window',offset:r1(G.L/2),width:door?80:100,height:door?210:120,sill:door?0:90,approx:false,note:''});save();refresh();}
   else if(a==='del-open'){const ww=wallById(b.dataset.w);if(!ww)return;pushUndo();ww.openings=ww.openings.filter(p=>p.id!==b.dataset.id);save();refresh();}
   else if(a==='flip'){if(!w)return;pushUndo();const G=geom(w);[w.x1,w.y1,w.x2,w.y2]=[w.x2,w.y2,w.x1,w.y1];w.openings.forEach(p=>p.offset=r1(G.L-p.offset));S.boxes.filter(x=>x.wallId===w.id).forEach(x=>{x.along=r1(G.L-x.along);x.side=-x.side;});save();refresh();}
+  else if(a==='wall-ghost'){if(!w)return;if(view.wallVis[w.id]==='ghost')delete view.wallVis[w.id];else view.wallVis[w.id]='ghost';refresh();}
+  else if(a==='wall-hide'){if(!w)return;view.wallVis[w.id]='hidden';sel=null;view.gizmo=null;refresh();toast('Hidden: '+w.name+' · Show all walls brings it back');}
   else if(a==='gizmo-move'){view.gizmo=view.gizmo==='translate'?null:'translate';refresh();}
   else if(a==='gizmo-rot'){view.gizmo=view.gizmo==='rotate'?null:'rotate';refresh();}
   else if(a==='del')deleteSel();
@@ -1063,6 +1084,8 @@ window.addEventListener('keydown',e=>{
   if(mod)return;
   if(k==='escape'){if(wallStart||conA){wallStart=null;conA=null;preview.visible=false;hint();}else if(view.gizmo){view.gizmo=null;refresh();}else if(sel){sel=null;refresh();}}
   else if(k==='delete'||k==='backspace'){if(sel){e.preventDefault();deleteSel();}}
+  else if(k==='x'){view.xray=!view.xray;refresh();toast(view.xray?'X-ray on':'X-ray off');}
+  else if(k==='h'&&sel&&sel.kind==='wall'){const w=wallById(sel.id);view.wallVis[sel.id]='hidden';sel=null;view.gizmo=null;refresh();toast('Hidden: '+w.name);}
   else if(k==='v')setTool('select');else if(k==='w')setTool('wall');else if(k==='b')setTool('box');else if(k==='l')setTool('ceil');else if(k==='c')setTool('conduit');
   else if(k==='g'&&sel&&sel.kind==='wall'){view.gizmo=view.gizmo==='translate'?null:'translate';refresh();}
   else if(k==='r'&&sel&&sel.kind==='wall'){view.gizmo=view.gizmo==='rotate'?null:'rotate';refresh();}
