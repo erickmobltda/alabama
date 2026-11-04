@@ -1,0 +1,1589 @@
+{
+  "source": "016-13 Elétrico, TIPO A (Pavimento Térreo + Pavimento Superior), 1:50",
+  "note": "Wall box heights are defaults (outlets 30/110/220, switches 110, panels 150, wall lights 200) and flagged approximate. Circuits 12-14 (air conditioning) run over the roof slab and have no points on the plans, so they are not modelled.",
+  "boxes": [
+    {
+      "id": "gLb",
+      "label": "Light b (A.Serviço)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "1",
+      "approx": false,
+      "floor": 0,
+      "x": 90,
+      "y": 134
+    },
+    {
+      "id": "gA1",
+      "label": "Outlet A.Serviço 1",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "2",
+      "approx": true,
+      "wallId": "g1",
+      "along": 127,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "gA2",
+      "label": "Outlet A.Serviço 2",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "2",
+      "approx": true,
+      "wallId": "g1",
+      "along": 177,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "gA3",
+      "label": "Outlet A.Serviço 3",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "2",
+      "approx": true,
+      "wallId": "g4",
+      "along": 36,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gA4",
+      "label": "Switch b + outlet",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "1/2",
+      "approx": true,
+      "wallId": "g4",
+      "along": 168,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gLc",
+      "label": "Light c (Lavabo)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "1",
+      "approx": false,
+      "floor": 0,
+      "x": 84,
+      "y": 351
+    },
+    {
+      "id": "gSc",
+      "label": "Switch c",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g6",
+      "along": 69,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gShgi",
+      "label": "Switch h/g/i",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g6",
+      "along": 15,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "gLav",
+      "label": "Outlet Lavabo",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "2",
+      "approx": true,
+      "wallId": "g1",
+      "along": 489,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "gLi",
+      "label": "Wall light i (light well)",
+      "mount": "wall",
+      "kind": "light",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g1",
+      "along": 586,
+      "side": -1,
+      "z": 200
+    },
+    {
+      "id": "gLg",
+      "label": "Light g (Churrasqueira)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "1",
+      "approx": false,
+      "floor": 0,
+      "x": 323,
+      "y": 162
+    },
+    {
+      "id": "gSf",
+      "label": "Switch f",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g9",
+      "along": 17,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gLf",
+      "label": "Light f (grill hood)",
+      "mount": "wall",
+      "kind": "light",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g9",
+      "along": 39,
+      "side": 1,
+      "z": 160
+    },
+    {
+      "id": "gC1",
+      "label": "Outlet Churrasqueira 1",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "2",
+      "approx": true,
+      "wallId": "g2",
+      "along": 248,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gC2",
+      "label": "Outlet Churrasqueira 2",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "2",
+      "approx": true,
+      "wallId": "g2",
+      "along": 338,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gC3",
+      "label": "Double outlet Churrasqueira",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "2",
+      "approx": true,
+      "wallId": "g2",
+      "along": 441,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gLh",
+      "label": "Wall light h",
+      "mount": "wall",
+      "kind": "light",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g2",
+      "along": 596,
+      "side": 1,
+      "z": 200
+    },
+    {
+      "id": "gM",
+      "label": "Spa motor (hidromassagem)",
+      "mount": "wall",
+      "kind": "other",
+      "circuit": "5",
+      "approx": true,
+      "wallId": "g8",
+      "along": 437,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "gLa",
+      "label": "Light a (Estar)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "1",
+      "approx": false,
+      "floor": 0,
+      "x": 146,
+      "y": 726
+    },
+    {
+      "id": "gLj",
+      "label": "Light j (Cozinha)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "1",
+      "approx": false,
+      "floor": 0,
+      "x": 373,
+      "y": 726
+    },
+    {
+      "id": "gLk",
+      "label": "Light k (Jantar)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "1",
+      "approx": false,
+      "floor": 0,
+      "x": 94,
+      "y": 1037
+    },
+    {
+      "id": "gK1",
+      "label": "Outlet Cozinha (under window)",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "3",
+      "approx": true,
+      "wallId": "g8",
+      "along": 293,
+      "side": 1,
+      "z": 100
+    },
+    {
+      "id": "gK2",
+      "label": "Outlet Cozinha 1",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "3",
+      "approx": true,
+      "wallId": "g2",
+      "along": 784,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gK3",
+      "label": "Outlet Cozinha 2",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "3",
+      "approx": true,
+      "wallId": "g2",
+      "along": 867,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gK4",
+      "label": "Outlet Cozinha 3",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "3",
+      "approx": true,
+      "wallId": "g2",
+      "along": 997,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gK5",
+      "label": "Outlet + switch j (Cozinha)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "1/3",
+      "approx": true,
+      "wallId": "g10",
+      "along": 40,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "gSak",
+      "label": "Switch a + k",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g10",
+      "along": 12,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gQD1",
+      "label": "QD1",
+      "mount": "wall",
+      "kind": "panel",
+      "circuit": "QD1",
+      "approx": true,
+      "wallId": "g10",
+      "along": 90,
+      "side": 1,
+      "z": 150
+    },
+    {
+      "id": "gE1",
+      "label": "Outlet Estar 1",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "4",
+      "approx": true,
+      "wallId": "g1",
+      "along": 699,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "gE2",
+      "label": "Outlet Estar 2",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "4",
+      "approx": true,
+      "wallId": "g1",
+      "along": 998,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "gE3",
+      "label": "Outlet Jantar",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "4",
+      "approx": true,
+      "wallId": "g1",
+      "along": 1261,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "gLe1",
+      "label": "Stair light e 1",
+      "mount": "wall",
+      "kind": "light",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g2",
+      "along": 1080,
+      "side": 1,
+      "z": 200
+    },
+    {
+      "id": "gS1",
+      "label": "Double outlet stair 1",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "4",
+      "approx": true,
+      "wallId": "g2",
+      "along": 1216,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "gLe2",
+      "label": "Stair light e 2",
+      "mount": "wall",
+      "kind": "light",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g2",
+      "along": 1246,
+      "side": 1,
+      "z": 200
+    },
+    {
+      "id": "gS2",
+      "label": "Double outlet stair 2",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "4",
+      "approx": true,
+      "wallId": "g2",
+      "along": 1289,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "gLe3",
+      "label": "Stair light e 3",
+      "mount": "wall",
+      "kind": "light",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g2",
+      "along": 1431,
+      "side": 1,
+      "z": 200
+    },
+    {
+      "id": "gH1",
+      "label": "Outlet hall",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "4",
+      "approx": true,
+      "wallId": "g2",
+      "along": 1525,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "gSuve",
+      "label": "Switch u/v/e (riser up)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "1/8",
+      "approx": true,
+      "wallId": "g2",
+      "along": 1591,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gSd",
+      "label": "Switch d",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "1",
+      "approx": true,
+      "wallId": "g2",
+      "along": 1631,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "gLd1",
+      "label": "Light d 1 (Garagem)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "1",
+      "approx": false,
+      "floor": 0,
+      "x": 155,
+      "y": 1330
+    },
+    {
+      "id": "gLd2",
+      "label": "Light d 2 (Garagem)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "1",
+      "approx": false,
+      "floor": 0,
+      "x": 155,
+      "y": 1576
+    },
+    {
+      "id": "gG1",
+      "label": "Outlet Garagem",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "4",
+      "approx": true,
+      "wallId": "g12",
+      "along": 44,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "uLl",
+      "label": "Light l (Dormitório)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 315,
+      "y": 162
+    },
+    {
+      "id": "uO1",
+      "label": "Outlet Dormitório 1",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "10",
+      "approx": true,
+      "wallId": "u3",
+      "along": 66,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "uSl1",
+      "label": "Switch l (3-way)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u3",
+      "along": 263,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "uO2",
+      "label": "Outlet Dormitório 2",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "10",
+      "approx": true,
+      "wallId": "u3",
+      "along": 285,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "uSl2",
+      "label": "Switch l (3-way, door)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u7",
+      "along": 102,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "uO3",
+      "label": "Outlet Dormitório 3",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "10",
+      "approx": true,
+      "wallId": "u2",
+      "along": 432,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "uLm",
+      "label": "Light m (BWC)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 82,
+      "y": 300
+    },
+    {
+      "id": "uSmw",
+      "label": "Switch m + w (3-way)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u4",
+      "along": 340,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "uLmir1",
+      "label": "Wall light (BWC mirror)",
+      "mount": "wall",
+      "kind": "light",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u1",
+      "along": 372,
+      "side": -1,
+      "z": 200
+    },
+    {
+      "id": "uO4",
+      "label": "Outlet BWC",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "10",
+      "approx": true,
+      "wallId": "u1",
+      "along": 407,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "uLw1",
+      "label": "Light w 1 (Circ.)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 204,
+      "y": 595
+    },
+    {
+      "id": "uSw",
+      "label": "Switch w (3-way)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u8",
+      "along": 232,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "uLw2",
+      "label": "Light w 2 (stair top)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 226,
+      "y": 933
+    },
+    {
+      "id": "uSeuv",
+      "label": "Switch e/u/v",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "1/8",
+      "approx": true,
+      "wallId": "u14",
+      "along": 25,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "uSw2",
+      "label": "Switch w (3-way, stair)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u14",
+      "along": 45,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "uQD2",
+      "label": "QD2",
+      "mount": "wall",
+      "kind": "panel",
+      "circuit": "QD2",
+      "approx": true,
+      "wallId": "u13",
+      "along": 242,
+      "side": 1,
+      "z": 150
+    },
+    {
+      "id": "uLn",
+      "label": "Light n (BWC suíte)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 82,
+      "y": 696
+    },
+    {
+      "id": "uSh",
+      "label": "Shower",
+      "mount": "wall",
+      "kind": "shower",
+      "circuit": "11",
+      "approx": true,
+      "wallId": "u1",
+      "along": 600,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "uLt",
+      "label": "Wall light t (mirror)",
+      "mount": "wall",
+      "kind": "light",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u1",
+      "along": 772,
+      "side": -1,
+      "z": 200
+    },
+    {
+      "id": "uO5",
+      "label": "Outlet BWC suíte",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "9",
+      "approx": true,
+      "wallId": "u1",
+      "along": 808,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "uStn",
+      "label": "Switch t + n",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u16",
+      "along": 43,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "uLr",
+      "label": "Light r (Dormitório 2)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 366,
+      "y": 724
+    },
+    {
+      "id": "uSr1",
+      "label": "Switch r (3-way, door)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u13",
+      "along": 98,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "uO6",
+      "label": "Outlet Dormitório 2 (door)",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "10",
+      "approx": true,
+      "wallId": "u13",
+      "along": 125,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "uO7",
+      "label": "Outlet Circ.",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "10",
+      "approx": true,
+      "wallId": "u13",
+      "along": 125,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "uO8",
+      "label": "Outlet Dormitório 2 right",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "10",
+      "approx": true,
+      "wallId": "u2",
+      "along": 774,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "uO9",
+      "label": "Outlet Dormitório 2 front",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "10",
+      "approx": true,
+      "wallId": "u15",
+      "along": 121,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "uSr2",
+      "label": "Switch r (3-way)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u15",
+      "along": 158,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "uLp",
+      "label": "Light p (Suíte)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 121,
+      "y": 1021
+    },
+    {
+      "id": "uLo",
+      "label": "Light o (Suíte)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 155,
+      "y": 1386
+    },
+    {
+      "id": "uSpo",
+      "label": "Switch p + o (3-way)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u18",
+      "along": 112,
+      "side": 1,
+      "z": 110
+    },
+    {
+      "id": "uO10",
+      "label": "Outlet Suíte 1",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "9",
+      "approx": true,
+      "wallId": "u1",
+      "along": 1013,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "uO11",
+      "label": "Outlet Suíte 2",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "9",
+      "approx": true,
+      "wallId": "u18",
+      "along": 270,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "uO12",
+      "label": "Outlet Suíte 3",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "9",
+      "approx": true,
+      "wallId": "u19",
+      "along": 32,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "uO13",
+      "label": "Outlet Suíte 4",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "9",
+      "approx": true,
+      "wallId": "u20",
+      "along": 42,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "uO14",
+      "label": "Outlet Suíte 5",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "9",
+      "approx": true,
+      "wallId": "u1",
+      "along": 1298,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "uSo",
+      "label": "Switch o (3-way)",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u1",
+      "along": 1385,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "uO15",
+      "label": "Outlet Suíte 6",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "9",
+      "approx": true,
+      "wallId": "u1",
+      "along": 1529,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "uO16",
+      "label": "Outlet Suíte 7",
+      "mount": "wall",
+      "kind": "outlet",
+      "circuit": "9",
+      "approx": true,
+      "wallId": "u21",
+      "along": 227,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "uLv1",
+      "label": "Light v 1 (void)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 247,
+      "y": 1053
+    },
+    {
+      "id": "uLv2",
+      "label": "Light v 2 (void)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 307,
+      "y": 1141
+    },
+    {
+      "id": "uLu",
+      "label": "Light u (void)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 389,
+      "y": 1359
+    },
+    {
+      "id": "uSq",
+      "label": "Switch q",
+      "mount": "wall",
+      "kind": "switch",
+      "circuit": "8",
+      "approx": true,
+      "wallId": "u22",
+      "along": 40,
+      "side": -1,
+      "z": 110
+    },
+    {
+      "id": "uLq1",
+      "label": "Light q 1 (Sacada)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 81,
+      "y": 1636
+    },
+    {
+      "id": "uLq2",
+      "label": "Light q 2 (Sacada)",
+      "mount": "ceiling",
+      "kind": "light",
+      "circuit": "8",
+      "approx": false,
+      "floor": 1,
+      "x": 241,
+      "y": 1636
+    }
+  ],
+  "conduits": [
+    {
+      "id": "c1",
+      "a": "gLb",
+      "b": "gA2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c2",
+      "a": "gA2",
+      "b": "gA1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c3",
+      "a": "gLb",
+      "b": "gA3",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c4",
+      "a": "gLb",
+      "b": "gA4",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c5",
+      "a": "gLb",
+      "b": "gLg",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c6",
+      "a": "gLb",
+      "b": "gLc",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c7",
+      "a": "gLg",
+      "b": "gSf",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c8",
+      "a": "gSf",
+      "b": "gLf",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c9",
+      "a": "gLg",
+      "b": "gC3",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c10",
+      "a": "gC1",
+      "b": "gC2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c11",
+      "a": "gC2",
+      "b": "gC3",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c12",
+      "a": "gC3",
+      "b": "gLh",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c13",
+      "a": "gLg",
+      "b": "gShgi",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c14",
+      "a": "gLg",
+      "b": "gLc",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c15",
+      "a": "gLc",
+      "b": "gSc",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c16",
+      "a": "gLc",
+      "b": "gLav",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c17",
+      "a": "gLav",
+      "b": "gLi",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c18",
+      "a": "gLc",
+      "b": "gLa",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c19",
+      "a": "gLa",
+      "b": "gK1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c20",
+      "a": "gLa",
+      "b": "gE1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c21",
+      "a": "gE1",
+      "b": "gE2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c22",
+      "a": "gLa",
+      "b": "gLj",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c23",
+      "a": "gLa",
+      "b": "gSak",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c24",
+      "a": "gSak",
+      "b": "gK5",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c25",
+      "a": "gLa",
+      "b": "gLk",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c26",
+      "a": "gLj",
+      "b": "gM",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c27",
+      "a": "gLj",
+      "b": "gK3",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c28",
+      "a": "gK2",
+      "b": "gK3",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c29",
+      "a": "gK3",
+      "b": "gK4",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c30",
+      "a": "gLj",
+      "b": "gQD1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c31",
+      "a": "gLk",
+      "b": "gE3",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c32",
+      "a": "gLk",
+      "b": "gLd1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c33",
+      "a": "gLd1",
+      "b": "gLd2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c34",
+      "a": "gLd1",
+      "b": "gG1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c35",
+      "a": "gLd1",
+      "b": "gH1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c36",
+      "a": "gLe1",
+      "b": "gS1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c37",
+      "a": "gS1",
+      "b": "gLe2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c38",
+      "a": "gLe2",
+      "b": "gS2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c39",
+      "a": "gS2",
+      "b": "gLe3",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c40",
+      "a": "gLe3",
+      "b": "gH1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c41",
+      "a": "gH1",
+      "b": "gSuve",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c42",
+      "a": "gSuve",
+      "b": "gSd",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c43",
+      "a": "uLl",
+      "b": "uO1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c44",
+      "a": "uLl",
+      "b": "uSl1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c45",
+      "a": "uSl1",
+      "b": "uO2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c46",
+      "a": "uLl",
+      "b": "uO3",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c47",
+      "a": "uLl",
+      "b": "uLm",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c48",
+      "a": "uLl",
+      "b": "uSmw",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c49",
+      "a": "uLl",
+      "b": "uSl2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c50",
+      "a": "uLl",
+      "b": "uLw1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c51",
+      "a": "uLm",
+      "b": "uSmw",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c52",
+      "a": "uLm",
+      "b": "uLmir1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c53",
+      "a": "uLmir1",
+      "b": "uO4",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c54",
+      "a": "uLw1",
+      "b": "uSw",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c55",
+      "a": "uLw1",
+      "b": "uLn",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c56",
+      "a": "uLw1",
+      "b": "uLr",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c57",
+      "a": "uLw1",
+      "b": "uLw2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c58",
+      "a": "uLn",
+      "b": "uSh",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c59",
+      "a": "uLn",
+      "b": "uLt",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c60",
+      "a": "uLt",
+      "b": "uO5",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c61",
+      "a": "uLn",
+      "b": "uStn",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c62",
+      "a": "uLn",
+      "b": "uQD2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c63",
+      "a": "uQD2",
+      "b": "uLw2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c64",
+      "a": "uQD2",
+      "b": "uLr",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c65",
+      "a": "uLr",
+      "b": "uSr1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c66",
+      "a": "uSr1",
+      "b": "uO6",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c67",
+      "a": "uO6",
+      "b": "uO7",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c68",
+      "a": "uLr",
+      "b": "uO8",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c69",
+      "a": "uLr",
+      "b": "uO9",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c70",
+      "a": "uO9",
+      "b": "uSr2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c71",
+      "a": "uLr",
+      "b": "uLw2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c72",
+      "a": "uLw2",
+      "b": "uSeuv",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c73",
+      "a": "uSeuv",
+      "b": "uSw2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c74",
+      "a": "uLw2",
+      "b": "uSpo",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c75",
+      "a": "uLw2",
+      "b": "uLp",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c76",
+      "a": "uLw2",
+      "b": "uLv1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c77",
+      "a": "uLv1",
+      "b": "uLv2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c78",
+      "a": "uLv2",
+      "b": "uLu",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c79",
+      "a": "uLp",
+      "b": "uO10",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c80",
+      "a": "uLp",
+      "b": "uO11",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c81",
+      "a": "uLp",
+      "b": "uLo",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c82",
+      "a": "uLo",
+      "b": "uO12",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c83",
+      "a": "uO12",
+      "b": "uO13",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c84",
+      "a": "uLo",
+      "b": "uLu",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c85",
+      "a": "uLo",
+      "b": "uO16",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c86",
+      "a": "uLo",
+      "b": "uO15",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c87",
+      "a": "uO15",
+      "b": "uSo",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c88",
+      "a": "uSo",
+      "b": "uO14",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c89",
+      "a": "uLo",
+      "b": "uLq2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c90",
+      "a": "uLq2",
+      "b": "uLq1",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c91",
+      "a": "uLq1",
+      "b": "uSq",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c92",
+      "a": "gQD1",
+      "b": "uQD2",
+      "mode": "orthogonal"
+    },
+    {
+      "id": "c93",
+      "a": "gSuve",
+      "b": "uLu",
+      "mode": "orthogonal"
+    }
+  ]
+}

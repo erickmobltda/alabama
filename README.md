@@ -23,7 +23,7 @@ Use another port with `PORT=9000 node server.js`.
 | File | What it is |
 |---|---|
 | `index.html` | The whole app: HTML, CSS and JavaScript. Contains no house data. |
-| `house.json` | The model: floors, slabs, stair, rooms, walls with openings, junction boxes, conduits. Source of truth. |
+| `house.json` | The whole model, electrical layout included: floors, slabs, stair, rooms, walls with openings, junction boxes, conduits. Source of truth. |
 | `house.md` | Generated brief for AI agents, rewritten on every save. Created on the first edit. |
 | `server.js` | Zero-dependency local server: serves the folder and saves `house.json` / `house.md`. |
 | `package.json` | Only provides `npm start`. |
@@ -69,8 +69,13 @@ The JSON is formatted with one property per line and coordinate pairs on one lin
 - Picking a room in the Rooms tab flies the camera to it.
 
 **Electrical**
-- Junction boxes (12 × 12 cm squares) on any wall face; drag them along a wall or onto another wall.
-- Conduits between boxes; a box can have zero or many. Routing is *orthogonal* (on the wall face, and through the ceiling between different walls) or *straight*.
+- Wall boxes (12 × 12 cm squares) on any wall face; drag them along a wall or onto another wall.
+- Ceiling boxes for light points, placed with the **Ceiling** tool on the active floor; drag them across the ceiling.
+- Each box has a type (outlet, switch, light point, AC outlet, shower, panel, other) and a circuit number. Panels (QD) are drawn 30 × 45 cm.
+- **Data → Electrical layout** replaces all boxes and conduits from a file, keeping walls and rooms.
+- Conduits between boxes; a box can have zero or many. Routing is *automatic* (on the wall face when both boxes share a wall face; otherwise up to the ceiling, straight through the slab, and down), *straight*, or *custom*.
+- Custom paths: double-click a conduit to add a joint where you click, or use **Add joint** in its inspector. Drag a joint to move it horizontally; hold Shift while dragging to change its height. Joints can also be typed in, removed, or reset to the automatic path. They are stored in absolute coordinates, so they stay put when a box moves.
+- Conduit types: **power**, **lighting** and **communication**, each with its own colour and a show/hide filter in the Electrical tab.
 - Length per conduit and in total.
 - Picking a box or conduit in the Electrical tab flies the camera to it.
 
@@ -83,7 +88,7 @@ The JSON is formatted with one property per line and coordinate pairs on one lin
 
 | Key | Action |
 |---|---|
-| V / W / B / C | Select / Wall / Box / Conduit tool |
+| V / W / B / L / C | Select / Wall / Box / Ceiling / Conduit tool |
 | G / R | Move / rotate selected wall |
 | Delete, Backspace | Delete selection |
 | Esc | Stop drawing, clear selection |
@@ -114,8 +119,11 @@ rooms[]     {id, floor (0|1), name, area, x, y, bounds [x0, y0, x1, y1]}
 walls[]     {id, floor (0|1), name, x1, y1, x2, y2, t, h (null = floor height),
              type ("wall"|"glass"), exterior, approx, note,
              openings[] {id, kind ("door"|"window"), offset, width, height, sill, approx, note}}
-boxes[]     {id, label, wallId, along, z, side (1 = Face A, -1 = Face B)}
-conduits[]  {id, a, b, mode ("orthogonal"|"straight")}
+boxes[]     {id, label, kind ("outlet"|"switch"|"light"|"ac"|"shower"|"panel"|"other"), circuit, approx,
+             mount "wall":    wallId, along, z, side (1 = Face A, -1 = Face B)
+             mount "ceiling": floor, x, y}
+conduits[]  {id, a, b, type ("power"|"lighting"|"communication"),
+             mode ("orthogonal"|"straight"|"custom"), points [{x, y, z}] (custom joints; z = elevation above the Térreo floor)}
 ```
 
 `offset` on an opening is the distance from the wall start to the opening centre; `along` on a box is the distance from the wall start. Slabs and the stair are only editable in `house.json`.
@@ -145,3 +153,14 @@ conduits[]  {id, a, b, mode ("orthogonal"|"straight")}
 4. The site is served at `https://<user>.github.io/<repo>/` once the deployment finishes.
 
 The published site always shows the committed `house.json` and is read-only: anything changed there is gone on reload.
+
+## Electrical layout (TIPO A)
+
+The boxes and conduits in `house.json` were read from the electrical sheet *016-13 Elétrico*, plans "TIPO A · Pavimento Térreo" and "TIPO A · Pavimento Superior" (1:50). Unidade 05 is a TIPO A unit per the sheet's key plan.
+
+- Symbols follow NBR 5444 as drawn: double circle = ceiling light (letter = switch, number = circuit); triangle outline / half-filled / filled = outlet low / mid / high; open circle = one-way switch; filled circle = three-way switch; half circle = wall light.
+- Positions are measured at the conduit end squares on the sheet and converted with the same 1:50 scale as the plans (about ±5 cm).
+- Mounting heights are not on the sheet. Defaults: outlets 30 / 110 / 220 cm, switches 110, panels 150, wall lights 200, spa motor 30, grill light 160. Every wall box is flagged approximate.
+- Conduits follow the drawn connections between points; their automatic routing is schematic (vertical on walls, straight across the slab), not the drawn curves. Use custom joints to match a real route.
+- Conduit types were assigned automatically: runs between lights and switches only are *lighting*, everything else *power*. The sheet has no communication points.
+- Circuits 12–14 (air conditioning) run over the roof slab and have no points on the plans, so they are not modelled. The QD1 → QD2 feeder and the hall switch riser to the void lights are cross-floor conduits.

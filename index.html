@@ -11,7 +11,7 @@
 :root{
   --bg:#e3e7e2; --scene:#dde2dc; --panel:#f6f7f4; --ink:#1c2320; --muted:#5b6560; --line:#d0d6d0;
   --accent:#c9561a; --accent-ink:#ffffff; --sel:#1d6aa8; --approx:#b97e0c; --wall:#f2f1ec; --slab:#c4cac2;
-  --conduit:#d4a017; --grid:#bcc3bb; --danger:#b3261e; --field:#ffffff;
+  --conduit:#d4a017; --c-power:#b83a4b; --c-comm:#2f7f86; --grid:#bcc3bb; --danger:#b3261e; --field:#ffffff;
   --font-d:'Saira Condensed','Arial Narrow',sans-serif;
   --font-b:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   --font-m:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
@@ -19,11 +19,11 @@
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#181c1a; --scene:#1c211f; --panel:#212624; --ink:#e5eae6; --muted:#9aa49e; --line:#343b37;
   --accent:#ee7a3a; --accent-ink:#1a0f08; --sel:#5aa6e6; --approx:#e2aa3c; --wall:#c7cac2; --slab:#48504b;
-  --conduit:#e9bd3c; --grid:#323935; --danger:#f2867c; --field:#2a302d; color-scheme:dark } }
+  --conduit:#e9bd3c; --c-power:#ec7d8d; --c-comm:#57b8bf; --grid:#323935; --danger:#f2867c; --field:#2a302d; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#181c1a; --scene:#1c211f; --panel:#212624; --ink:#e5eae6; --muted:#9aa49e; --line:#343b37;
   --accent:#ee7a3a; --accent-ink:#1a0f08; --sel:#5aa6e6; --approx:#e2aa3c; --wall:#c7cac2; --slab:#48504b;
-  --conduit:#e9bd3c; --grid:#323935; --danger:#f2867c; --field:#2a302d; color-scheme:dark }
+  --conduit:#e9bd3c; --c-power:#ec7d8d; --c-comm:#57b8bf; --grid:#323935; --danger:#f2867c; --field:#2a302d; color-scheme:dark }
 
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:14px;overflow:hidden}
@@ -126,6 +126,7 @@ ul.notes{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;line-hei
         <button class="tbtn" data-tool="select" title="Select and drag boxes"><svg viewBox="0 0 16 16"><path d="M3 2l9 5-4 1-1 4z"/></svg>Select<kbd>V</kbd></button>
         <button class="tbtn" data-tool="wall" title="Draw walls: click start, click end"><svg viewBox="0 0 16 16"><path d="M2 12h12M2 9h12M5 9v3M11 9v3M8 6v3M2 6h12"/></svg>Wall<kbd>W</kbd></button>
         <button class="tbtn" data-tool="box" title="Place junction box on a wall"><svg viewBox="0 0 16 16"><rect x="4" y="4" width="8" height="8"/></svg>Box<kbd>B</kbd></button>
+        <button class="tbtn" data-tool="ceil" title="Place a ceiling box (light point): click a spot on the active floor"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5"/><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>Ceiling<kbd>L</kbd></button>
         <button class="tbtn" data-tool="conduit" title="Connect two boxes"><svg viewBox="0 0 16 16"><rect x="1.5" y="10.5" width="4" height="4"/><rect x="10.5" y="1.5" width="4" height="4"/><path d="M3.5 10.5V3.5h7"/></svg>Conduit<kbd>C</kbd></button>
       </div>
       <div class="tgroup" role="group" aria-label="Floor being edited">
@@ -169,7 +170,7 @@ ul.notes{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;line-hei
         <div class="slider"><label for="hG">Térreo walls</label><input type="range" id="hG" min="200" max="400" step="5"><output id="hGo"></output></div>
         <div class="slider"><label for="hU">Superior walls</label><input type="range" id="hU" min="200" max="400" step="5"><output id="hUo"></output></div>
         <div class="slider"><label for="hCut">Wall cut</label><input type="range" id="hCut" min="10" max="100" step="1"><output id="hCuto"></output></div>
-        <div class="legend"><span><i style="background:var(--wall);border:1px solid var(--line)"></i>Wall</span><span><i style="background:var(--approx)"></i>Approximate</span><span><i style="background:var(--sel)"></i>Selected</span><span><i style="background:var(--accent)"></i>Box</span><span><i style="background:var(--conduit)"></i>Conduit</span></div>
+        <div class="legend"><span><i style="background:var(--wall);border:1px solid var(--line)"></i>Wall</span><span><i style="background:var(--approx)"></i>Approximate</span><span><i style="background:var(--sel)"></i>Selected</span><span><i style="background:var(--accent)"></i>Box</span><span><i style="background:var(--c-power)"></i>Power</span><span><i style="background:var(--conduit)"></i>Lighting</span><span><i style="background:var(--c-comm)"></i>Communication</span></div>
       </section>
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" data-tab="ins" aria-selected="true">Inspector</button>
@@ -202,7 +203,7 @@ const DATA_FILE='house.json';
 // Used only to migrate files saved before walls had an "exterior" flag: party walls and front/back façades
 const DEFAULT_EXTERIOR=['g1','g2','g3','g14','u1','u2','u3','u22','u23','u24','u25'];
 const store={mode:'none',state:'',msg:'',timer:null,lastSaved:'',local:false};
-const view={show:[true,true],exterior:true,roof:false,labels:true,approx:true,cut:1,edit:0,tool:'select',gizmo:null,tab:'ins'};
+const view={ctype:{power:true,lighting:true,communication:true},show:[true,true],exterior:true,roof:false,labels:true,approx:true,cut:1,edit:0,tool:'select',gizmo:null,tab:'ins'};
 let sel=null; // {kind,id}
 const undoStack=[],redoStack=[];
 function pushUndo(){undoStack.push(JSON.stringify(S));if(undoStack.length>120)undoStack.shift();redoStack.length=0;syncHistory();}
@@ -263,8 +264,18 @@ function normalize(o){
     w.openings.forEach(p=>{p.id=p.id||rid('o');p.kind=p.kind==='window'?'window':'door';['offset','width','height','sill'].forEach(k=>p[k]=+p[k]||0);});});
   const hasExt=o.walls.some(w=>'exterior' in w);
   o.walls.forEach(w=>{w.exterior=hasExt?!!w.exterior:DEFAULT_EXTERIOR.includes(w.id);});
-  const wids=new Set(o.walls.map(w=>w.id)); o.boxes=o.boxes.filter(b=>wids.has(b.wallId));
+  const wids=new Set(o.walls.map(w=>w.id));
+  o.boxes.forEach(b=>{b.mount=b.mount==='ceiling'?'ceiling':'wall';b.kind=BOX_KINDS[b.kind]?b.kind:'other';b.circuit=b.circuit==null?'':String(b.circuit);b.approx=!!b.approx;
+    if(b.mount==='ceiling'){b.floor=b.floor?1:0;b.x=+b.x||0;b.y=+b.y||0;}else{b.along=+b.along||0;b.z=+b.z||0;b.side=b.side===-1?-1:1;}});
+  o.boxes=o.boxes.filter(b=>b.mount==='ceiling'||wids.has(b.wallId));
   const bids=new Set(o.boxes.map(b=>b.id)); o.conduits=o.conduits.filter(c=>bids.has(c.a)&&bids.has(c.b));
+  const bk=Object.fromEntries(o.boxes.map(b=>[b.id,b.kind]));
+  o.conduits.forEach(c=>{
+    if(!CTYPES[c.type])c.type=typeFromKinds([bk[c.a],bk[c.b]]);
+    if(!CMODES[c.mode])c.mode='orthogonal';
+    c.points=Array.isArray(c.points)?c.points.map(p=>({x:+p.x||0,y:+p.y||0,z:+p.z||0})):[];
+    if(c.mode==='custom'&&!c.points.length)c.mode='straight';
+  });
   o.floors.forEach(f=>f.height=+f.height||280); return o;
 }
 const wallById=id=>S.walls.find(w=>w.id===id);
@@ -312,6 +323,9 @@ const M={
   box:new THREE.MeshStandardMaterial({roughness:.6}),
   boxSel:new THREE.MeshStandardMaterial({roughness:.6}),
   con:new THREE.MeshStandardMaterial({roughness:.5}),
+  conP:new THREE.MeshStandardMaterial({roughness:.5}),
+  conC:new THREE.MeshStandardMaterial({roughness:.5}),
+  joint:new THREE.MeshBasicMaterial({depthTest:false,transparent:true}),
   conSel:new THREE.MeshStandardMaterial({roughness:.5}),
   edge:new THREE.LineBasicMaterial({transparent:true,opacity:.35}),
   preview:new THREE.MeshBasicMaterial({transparent:true,opacity:.45,depthWrite:false}),
@@ -320,14 +334,14 @@ const M={
 let THEME={};
 function readTheme(){
   const cs=getComputedStyle(document.documentElement),g=n=>cs.getPropertyValue(n).trim()||'#888';
-  THEME={scene:g('--scene'),wall:g('--wall'),approx:g('--approx'),sel:g('--sel'),slab:g('--slab'),accent:g('--accent'),conduit:g('--conduit'),grid:g('--grid'),ink:g('--ink'),muted:g('--muted')};
+  THEME={scene:g('--scene'),wall:g('--wall'),approx:g('--approx'),sel:g('--sel'),slab:g('--slab'),accent:g('--accent'),conduit:g('--conduit'),power:g('--c-power'),comm:g('--c-comm'),grid:g('--grid'),ink:g('--ink'),muted:g('--muted')};
   scene.background=new THREE.Color(THEME.scene);
   M.wall.color.set(THEME.wall);
   M.approx.color.set(THEME.wall).lerp(new THREE.Color(THEME.approx),.55);
   M.sel.color.set(THEME.sel);M.glassSel.color.set(THEME.sel);M.glassApprox.color.set(THEME.approx);
   M.slab.color.set(THEME.slab);M.slabUp.color.set(THEME.slab).offsetHSL(0,0,.04);M.roof.color.set(THEME.slab).offsetHSL(0,0,-.05);
   M.box.color.set(THEME.accent);M.boxSel.color.set(THEME.sel);
-  M.con.color.set(THEME.conduit);M.conSel.color.set(THEME.sel);
+  M.con.color.set(THEME.conduit);M.conP.color.set(THEME.power);M.conC.color.set(THEME.comm);M.conSel.color.set(THEME.sel);M.joint.color.set(THEME.sel);
   M.edge.color.set(THEME.ink);M.preview.color.set(THEME.sel);M.snap.color.set(THEME.accent);
   if(grid){scene.remove(grid);grid.geometry.dispose();}
   grid=new THREE.GridHelper(4000,80,new THREE.Color(THEME.grid),new THREE.Color(THEME.grid));
@@ -339,7 +353,9 @@ function labelTex(t1,t2,color){
   const key=t1+'|'+t2+'|'+color;if(texCache.has(key))return texCache.get(key);
   const c=document.createElement('canvas');c.width=512;c.height=168;const x=c.getContext('2d');
   x.fillStyle=color;x.textAlign='center';x.textBaseline='alphabetic';
-  x.font='600 70px "Saira Condensed","Arial Narrow",sans-serif';x.fillText(t1,256,t2?82:110);
+  let fs=70;x.font='600 '+fs+'px "Saira Condensed","Arial Narrow",sans-serif';
+  const tw=x.measureText(t1).width;if(tw>496){fs=Math.max(28,Math.floor(fs*496/tw));x.font='600 '+fs+'px "Saira Condensed","Arial Narrow",sans-serif';}
+  x.fillText(t1,256,t2?82:110);
   if(t2){x.font='400 40px "JetBrains Mono",monospace';x.globalAlpha=.75;x.fillText(t2,256,140);}
   const tx=new THREE.CanvasTexture(c);tx.anisotropy=4;texCache.set(key,tx);return tx;
 }
@@ -398,45 +414,62 @@ function buildStairs(){
   if(f2)for(let j=1;j<=f2.treads;j++)step(f2.xStart-T*j,f2.xStart-T*(j-1),f2.y0,f2.y1,kL+j,r+8);
 }
 function facePt(w,along,z,side){const G=geom(w),off=(w.t/2+1.4)*side;return new THREE.Vector3(w.x1+G.ux*along+G.nx*off,base(w.floor)+z,w.y1+G.uy*along+G.ny*off);}
+const CEIL_GAP=6;
+const BOX_KINDS={outlet:'Outlet',switch:'Switch',light:'Light point',ac:'AC outlet',shower:'Shower',panel:'Panel (QD)',other:'Other'};
+const isCeil=b=>!!b&&b.mount==='ceiling';
+const ceilY=f=>base(f)+floorH(f);
+function boxFloor(b){if(isCeil(b))return b.floor;const w=wallById(b.wallId);return w?w.floor:0;}
+function boxAttach(b){if(isCeil(b))return new THREE.Vector3(b.x,ceilY(b.floor)-CEIL_GAP,b.y);const w=wallById(b.wallId);return w?facePt(w,b.along,b.z,b.side):null;}
+function boxRoute(b){if(isCeil(b))return boxAttach(b);const w=wallById(b.wallId);return facePt(w,b.along,Math.max(b.z,Math.min(wallH(w),floorH(w.floor))-CEIL_GAP),b.side);}
+function boxPlan(b){const p=boxAttach(b);return p?{x:p.x,y:p.z,elev:isCeil(b)?ceilY(b.floor):p.y}:null;}
 function buildBox(b){
-  const w=wallById(b.wallId);if(!w)return;
-  const G=geom(w),off=(w.t/2+2.5)*b.side;
-  const m=new THREE.Mesh(new THREE.BoxGeometry(12,12,5),(sel&&sel.kind==='box'&&sel.id===b.id)?M.boxSel:M.box);
-  m.position.set(w.x1+G.ux*b.along+G.nx*off,base(w.floor)+b.z,w.y1+G.uy*b.along+G.ny*off);
-  m.rotation.y=G.theta;m.castShadow=true;m.userData={kind:'box',id:b.id,floor:w.floor};
-  floorG[w.floor].add(m);pickables.push(m);addEdges(m,floorG[w.floor]);
+  const f=boxFloor(b),sz=b.kind==='panel'?30:12,selB=sel&&sel.kind==='box'&&sel.id===b.id;let m;
+  if(isCeil(b)){m=new THREE.Mesh(new THREE.BoxGeometry(sz,5,sz),selB?M.boxSel:M.box);m.position.set(b.x,ceilY(f)-2.5,b.y);}
+  else{const w=wallById(b.wallId);if(!w)return;const G=geom(w),off=(w.t/2+2.5)*b.side;
+    m=new THREE.Mesh(new THREE.BoxGeometry(sz,b.kind==='panel'?45:sz,5),selB?M.boxSel:M.box);
+    m.position.set(w.x1+G.ux*b.along+G.nx*off,base(w.floor)+b.z,w.y1+G.uy*b.along+G.ny*off);m.rotation.y=G.theta;}
+  m.castShadow=true;m.userData={kind:'box',id:b.id,floor:f};
+  floorG[f].add(m);pickables.push(m);addEdges(m,floorG[f]);
   if(view.labels){
     const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:labelTex(b.label,'',THEME.ink),transparent:true,depthWrite:false}));
-    sp.material.userData.own=true;sp.scale.set(78,25.6,1);sp.position.copy(m.position).add(new THREE.Vector3(0,20,0));
-    floorG[w.floor].add(sp);
+    sp.material.userData.own=true;sp.scale.set(78,25.6,1);sp.position.copy(m.position).add(new THREE.Vector3(0,isCeil(b)?-18:20,0));
+    floorG[f].add(sp);
   }
 }
+const CTYPES={power:'Power',lighting:'Lighting',communication:'Communication'};
+const CMODES={orthogonal:'Automatic (on wall, then across the ceiling)',straight:'Straight line',custom:'Custom path (joints)'};
+const typeFromKinds=ks=>ks.every(k=>k==='light'||k==='switch')?'lighting':'power';
+function inferType(c){return typeFromKinds([boxById(c.a),boxById(c.b)].map(b=>b&&b.kind));}
+const jointV=p=>new THREE.Vector3(p.x,p.z,p.y);
+function materialize(c){const pts=conduitPts(c)||[];c.points=pts.slice(1,-1).map(p=>({x:r1(p.x),y:r1(p.z),z:r1(p.y)}));c.mode='custom';}
 function conduitPts(c){
   const A=boxById(c.a),B=boxById(c.b);if(!A||!B)return null;
-  const wA=wallById(A.wallId),wB=wallById(B.wallId);if(!wA||!wB)return null;
-  const pA=facePt(wA,A.along,A.z,A.side),pB=facePt(wB,B.along,B.z,B.side);
+  const pA=boxAttach(A),pB=boxAttach(B);if(!pA||!pB)return null;
   let pts;
-  if(c.mode==='straight')pts=[pA,pB];
-  else if(wA.id===wB.id&&A.side===B.side)pts=[pA,facePt(wA,A.along,B.z,A.side),pB];
-  else{
-    const rA=Math.max(A.z,Math.min(wallH(wA),floorH(wA.floor))-20),rB=Math.max(B.z,Math.min(wallH(wB),floorH(wB.floor))-20);
-    pts=[pA,facePt(wA,A.along,rA,A.side),facePt(wB,B.along,rB,B.side),pB];
-  }
+  if(c.mode==='custom')pts=[pA,...(c.points||[]).map(jointV),pB];
+  else if(c.mode==='straight')pts=[pA,pB];
+  else if(!isCeil(A)&&!isCeil(B)&&A.wallId===B.wallId&&A.side===B.side)pts=[pA,facePt(wallById(A.wallId),A.along,B.z,A.side),pB];
+  else pts=[pA,boxRoute(A),boxRoute(B),pB];
   return pts.filter((p,i)=>i===0||p.distanceTo(pts[i-1])>.5);
 }
 const conLen=c=>{const p=conduitPts(c);if(!p)return 0;let s=0;for(let i=1;i<p.length;i++)s+=p[i].distanceTo(p[i-1]);return s;};
 function buildConduit(c){
   const pts=conduitPts(c);if(!pts)return;
-  const A=boxById(c.a),B=boxById(c.b),fa=wallById(A.wallId).floor,fb=wallById(B.wallId).floor;
+  const fa=boxFloor(boxById(c.a)),fb=boxFloor(boxById(c.b));
   const grp=new THREE.Group();grp.visible=view.show[fa]&&view.show[fb];
-  const mat=(sel&&sel.kind==='conduit'&&sel.id===c.id)?M.conSel:M.con,up=new THREE.Vector3(0,1,0);
+  const isSel=sel&&sel.kind==='conduit'&&sel.id===c.id;
+  const mat=isSel?M.conSel:c.type==='power'?M.conP:c.type==='communication'?M.conC:M.con,up=new THREE.Vector3(0,1,0);
   for(let i=1;i<pts.length;i++){
     const a=pts[i-1],b=pts[i],len=a.distanceTo(b),dir=b.clone().sub(a).normalize();
     const m=new THREE.Mesh(new THREE.CylinderGeometry(1.4,1.4,len,10),mat);
     m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(up,dir);
-    m.userData={kind:'conduit',id:c.id};grp.add(m);pickables.push(m);
+    m.userData={kind:'conduit',id:c.id,seg:i};grp.add(m);pickables.push(m);
   }
   for(let i=1;i<pts.length-1;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(1.6,10,8),mat);s.position.copy(pts[i]);grp.add(s);}
+  if(isSel&&c.mode==='custom')(c.points||[]).forEach((p,i)=>{
+    const h=new THREE.Mesh(new THREE.SphereGeometry(5,16,12),M.joint);h.position.copy(jointV(p));h.renderOrder=20;
+    h.userData={kind:'joint',id:c.id,idx:i};grp.add(h);pickables.push(h);
+  });
   world.add(grp);
 }
 function rebuild3D(){
@@ -463,8 +496,9 @@ function rebuild3D(){
       floorG[r.floor].add(new THREE.LineLoop(g,lm));
     }
   });
-  S.boxes.filter(b=>shown(wallById(b.wallId))).forEach(buildBox);
-  S.conduits.filter(c=>{const A=boxById(c.a),B=boxById(c.b);return A&&B&&shown(wallById(A.wallId))&&shown(wallById(B.wallId));}).forEach(buildConduit);
+  const bShown=b=>b&&(isCeil(b)||shown(wallById(b.wallId)));
+  S.boxes.filter(bShown).forEach(buildBox);
+  S.conduits.filter(c=>view.ctype[c.type]!==false&&bShown(boxById(c.a))&&bShown(boxById(c.b))).forEach(buildConduit);
   placeGizmo();
 }
 function refresh(){rebuild3D();renderPanel();syncToolbar();}
@@ -515,23 +549,44 @@ let wallStart=null,conA=null;
 const preview=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),M.preview);preview.visible=false;helpers.add(preview);
 const snapDot=new THREE.Mesh(new THREE.RingGeometry(6,9,24),M.snap);snapDot.rotation.x=-Math.PI/2;snapDot.visible=false;snapDot.renderOrder=10;helpers.add(snapDot);
 
-let down=null,boxDrag=null;
+let down=null,boxDrag=null,jointDrag=null;
 cv.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;
   tcUsed=false;
   if(tc.axis!==null){controls.enabled=false;return;}
   down={x:e.clientX,y:e.clientY};
   if(view.tool==='select'){
+    const j=pick(e,u=>u.kind==='joint');
+    if(j){controls.enabled=false;jointDrag={id:j.object.userData.id,idx:j.object.userData.idx,snap:JSON.stringify(S),moved:false};return;}
     const h=pick(e,u=>u.kind==='box');
     if(h){controls.enabled=false;boxDrag={id:h.object.userData.id,snap:JSON.stringify(S),moved:false};}
   }
 },true);
+cv.addEventListener('dblclick',e=>{
+  if(view.tool!=='select')return;
+  const h=pick(e,u=>u.kind==='conduit');if(!h)return;
+  const c=conById(h.object.userData.id);if(!c)return;
+  pushUndo();if(c.mode!=='custom')materialize(c);
+  c.points.splice(Math.max(0,h.object.userData.seg-1),0,{x:r1(h.point.x),y:r1(h.point.z),z:r1(h.point.y)});
+  sel={kind:'conduit',id:c.id};setTab('ins');save();refresh();toast('Joint added · drag it to reshape, Shift-drag to change its height');
+});
 cv.addEventListener('pointermove',e=>{
+  if(jointDrag){
+    if(!jointDrag.moved&&down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<4)return;
+    if(!jointDrag.moved){undoStack.push(jointDrag.snap);redoStack.length=0;jointDrag.moved=true;}
+    const c=conById(jointDrag.id),p=c&&c.points[jointDrag.idx];if(!p)return;
+    setRay(e);const v=jointV(p),hit=new THREE.Vector3();
+    if(e.shiftKey){const n=camera.getWorldDirection(new THREE.Vector3());n.y=0;if(n.lengthSq()<1e-6)return;n.normalize();
+      if(ray.ray.intersectPlane(new THREE.Plane().setFromNormalAndCoplanarPoint(n,v),hit))p.z=Math.round(hit.y);}
+    else if(ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0,1,0),-v.y),hit)){p.x=Math.round(hit.x);p.y=Math.round(hit.z);}
+    rebuild3D();setReadout('Joint '+(jointDrag.idx+1)+' · '+p.x+', '+p.y+' · elevation '+p.z+' cm');return;
+  }
   if(boxDrag){
     if(!boxDrag.moved&&down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<4)return;
     if(!boxDrag.moved){undoStack.push(boxDrag.snap);redoStack.length=0;boxDrag.moved=true;sel={kind:'box',id:boxDrag.id};}
-    const b=boxById(boxDrag.id);const h=pick(e,u=>u.kind==='wall'&&!u.pane);
-    if(b&&h){placeOnWall(b,h);rebuild3D();setReadout(b.label+' · '+Math.round(b.along)+' along · '+Math.round(b.z)+' high');}
+    const b=boxById(boxDrag.id);if(!b)return;
+    if(isCeil(b)){const p=planePoint(e,b.floor);if(p){b.x=Math.round(p.x);b.y=Math.round(p.z);rebuild3D();setReadout(b.label+' · ceiling '+b.x+', '+b.y);}}
+    else{const h=pick(e,u=>u.kind==='wall'&&!u.pane);if(h){placeOnWall(b,h);rebuild3D();setReadout(b.label+' · '+Math.round(b.along)+' along · '+Math.round(b.z)+' high');}}
     return;
   }
   if(view.tool==='wall'){
@@ -549,6 +604,8 @@ cv.addEventListener('pointermove',e=>{
 window.addEventListener('pointerup',e=>{
   if(e.button!==0)return;
   const wasClick=down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5&&e.target===cv;
+  if(jointDrag){const moved=jointDrag.moved;jointDrag=null;controls.enabled=true;down=null;
+    if(moved){syncHistory();save();refresh();}return;}
   if(boxDrag){const moved=boxDrag.moved;boxDrag=null;controls.enabled=true;down=null;
     if(moved){syncHistory();save();refresh();return;}
   }
@@ -567,7 +624,7 @@ function onClick(e){
   const t=view.tool;
   if(t==='select'){
     const h=pick(e,u=>u.kind);
-    sel=h?{kind:h.object.userData.kind,id:h.object.userData.id}:null;
+    sel=h?{kind:h.object.userData.kind==='joint'?'conduit':h.object.userData.kind,id:h.object.userData.id}:null;
     if(!sel||sel.kind!=='wall')view.gizmo=null;
     if(sel)setTab('ins');refresh();return;
   }
@@ -584,8 +641,14 @@ function onClick(e){
     const h=pick(e,u=>u.kind==='wall'&&!u.pane);
     if(!h){toast('Click on a wall face to place a box');return;}
     pushUndo();
-    const b={id:rid('b'),label:'Box '+(S.boxes.length+1),wallId:'',along:0,z:0,side:1};
+    const b={id:rid('b'),label:'Box '+(S.boxes.length+1),mount:'wall',kind:'outlet',circuit:'',approx:false,wallId:'',along:0,z:0,side:1};
     placeOnWall(b,h);S.boxes.push(b);sel={kind:'box',id:b.id};save();refresh();return;
+  }
+  if(t==='ceil'){
+    const p=planePoint(e,view.edit);if(!p)return;
+    pushUndo();
+    const b={id:rid('b'),label:'Light '+(S.boxes.filter(isCeil).length+1),mount:'ceiling',kind:'light',circuit:'',approx:false,floor:view.edit,x:Math.round(p.x),y:Math.round(p.z)};
+    S.boxes.push(b);sel={kind:'box',id:b.id};save();refresh();return;
   }
   if(t==='conduit'){
     const h=pick(e,u=>u.kind==='box');
@@ -598,7 +661,7 @@ function onClick(e){
 }
 function connect(a,b){
   if(S.conduits.some(c=>(c.a===a&&c.b===b)||(c.a===b&&c.b===a))){toast('These boxes are already connected');return;}
-  pushUndo();const c={id:rid('c'),a,b,mode:'orthogonal'};S.conduits.push(c);sel={kind:'conduit',id:c.id};save();refresh();
+  pushUndo();const c={id:rid('c'),a,b,mode:'orthogonal',type:'power',points:[]};c.type=inferType(c);S.conduits.push(c);sel={kind:'conduit',id:c.id};save();refresh();
   toast('Conduit added · '+(conLen(c)/100).toFixed(2)+' m');
 }
 
@@ -617,6 +680,7 @@ const HINTS={
   select:'Drag to orbit · right-drag or two fingers to pan · scroll to zoom. Click a wall, box or conduit to edit it; drag a box to slide it along walls.',
   wall:'Click the start point, then the end point on the active floor. Snaps to 5 cm and to wall ends; hold Shift for straight walls. Esc stops drawing.',
   box:'Click any wall face to place a junction box.',
+  ceil:'Click a spot on the active floor to put a ceiling box (light point) above it. Hide Superior to see Térreo ceiling boxes.',
   conduit:'Click a first box, then a second box to run a conduit. Keep clicking to chain. Esc to stop.'
 };
 function hint(){
@@ -736,35 +800,53 @@ function renderPanel(){
     return;
   }
   if(sel.kind==='box'){
-    const b=o,w=wallById(b.wallId),cons=S.conduits.filter(c=>c.a===b.id||c.b===b.id);
+    const b=o,f=boxFloor(b),w=isCeil(b)?null:wallById(b.wallId),cons=S.conduits.filter(c=>c.a===b.id||c.b===b.id);
     const others=S.boxes.filter(x=>x.id!==b.id&&!cons.some(c=>c.a===x.id||c.b===x.id));
-    pane.innerHTML=`<div class="ins-head"><span class="kind">Junction box · ${esc(S.floors[w.floor].name)}</span></div>
-      <label class="fld full"><span>Label</span><input type="text" data-scope="box" data-id="${b.id}" data-f="label" value="${esc(b.label)}"></label>
-      <p class="muted">On wall “${esc(w.name)}”. Drag the box in Select mode to slide it or move it to another wall.</p>
+    pane.innerHTML=`<div class="ins-head"><span class="kind">${isCeil(b)?'Ceiling box':'Wall box'} · ${esc(S.floors[f].name)}</span>${b.approx?'<span class="badge">≈ approximate</span>':''}</div>
+      <div class="grid2">
+        <label class="fld"><span>Label</span><input type="text" data-scope="box" data-id="${b.id}" data-f="label" value="${esc(b.label)}"></label>
+        <label class="fld"><span>Circuit</span><input type="text" data-scope="box" data-id="${b.id}" data-f="circuit" value="${esc(b.circuit)}" placeholder="e.g. 4"></label>
+        <label class="fld"><span>Type</span><select data-scope="box" data-id="${b.id}" data-f="kind">${Object.entries(BOX_KINDS).map(([k,l])=>`<option value="${k}"${b.kind===k?' selected':''}>${l}</option>`).join('')}</select></label>
+        <span></span>
+      </div>
+      ${isCeil(b)?`<p class="muted">On the ${esc(S.floors[f].name)} ceiling. Drag it in Select mode to move it.</p>
+      <div class="grid2">${num('box',b.id,'x',b.x,'Plan x')}${num('box',b.id,'y',b.y,'Plan y')}</div>`
+      :`<p class="muted">On wall “${esc(w.name)}”. Drag the box in Select mode to slide it or move it to another wall.</p>
       <div class="grid2">
         ${num('box',b.id,'along',b.along,'Along wall (from start)')}${num('box',b.id,'z',b.z,'Height above floor')}
         <label class="fld"><span>Wall face</span><select data-scope="box" data-id="${b.id}" data-f="side"><option value="1"${b.side===1?' selected':''}>Face A</option><option value="-1"${b.side===-1?' selected':''}>Face B</option></select></label>
-      </div>
+      </div>`}
+      <label class="chk"><input type="checkbox" data-scope="box" data-id="${b.id}" data-f="approx"${b.approx?' checked':''}> Approximate position</label>
       <h3>Conduits (${cons.length})</h3>
       ${cons.length?`<div class="list">${cons.map(c=>{const ot=boxById(c.a===b.id?c.b:c.a);return`<button class="li" data-act="sel-conduit" data-id="${c.id}"><span class="sw" style="background:var(--conduit)"></span><span class="grow">${esc(ot?ot.label:'?')}</span><span class="num">${(conLen(c)/100).toFixed(2)} m</span></button>`;}).join('')}</div>`:'<p class="muted">Not connected yet.</p>'}
-      ${others.length?`<label class="fld full"><span>Connect to</span><select data-scope="box" data-id="${b.id}" data-f="connect"><option value="">Choose a box…</option>${others.map(x=>`<option value="${x.id}">${esc(x.label)} · ${esc(S.floors[wallById(x.wallId).floor].name)}</option>`).join('')}</select></label>`:''}
+      ${others.length?`<label class="fld full"><span>Connect to</span><select data-scope="box" data-id="${b.id}" data-f="connect"><option value="">Choose a box…</option>${others.map(x=>`<option value="${x.id}">${esc(x.label)} · ${esc(S.floors[boxFloor(x)].name)}</option>`).join('')}</select></label>`:''}
       <div class="btns"><button class="btn danger" data-act="del">Delete box</button></div>`;
     return;
   }
   const c=o,A=boxById(c.a),B=boxById(c.b);
   pane.innerHTML=`<div class="ins-head"><span class="kind">Conduit</span><h2>${esc(A.label)} → ${esc(B.label)}</h2></div>
     <div class="stats"><div class="stat"><b>${(conLen(c)/100).toFixed(2)}</b><span>metres</span></div><div class="stat"><b>${conduitPts(c).length-1}</b><span>runs</span></div></div>
-    <label class="fld full"><span>Routing</span><select data-scope="conduit" data-id="${c.id}" data-f="mode"><option value="orthogonal"${c.mode!=='straight'?' selected':''}>Orthogonal (on wall, via ceiling between walls)</option><option value="straight"${c.mode==='straight'?' selected':''}>Straight line</option></select></label>
+    <div class="grid2">
+      <label class="fld"><span>Type</span><select data-scope="conduit" data-id="${c.id}" data-f="type">${Object.entries(CTYPES).map(([k,l])=>`<option value="${k}"${c.type===k?' selected':''}>${l}</option>`).join('')}</select></label>
+      <label class="fld"><span>Routing</span><select data-scope="conduit" data-id="${c.id}" data-f="mode">${Object.entries(CMODES).map(([k,l])=>`<option value="${k}"${c.mode===k?' selected':''}>${l}</option>`).join('')}</select></label>
+    </div>
+    <h3>Joints (${c.mode==='custom'?c.points.length:0})</h3>
+    ${c.mode==='custom'&&c.points.length?c.points.map((p,i)=>`<div class="op"><div class="top"><b>Joint ${i+1}</b><span class="sp"></span><button class="btn sm danger" data-act="del-joint" data-id="${c.id}" data-i="${i}">Remove</button></div>
+      ${['x','y','z'].map(f=>`<label class="fld"><span>${f==='z'?'Elevation':f.toUpperCase()}</span><input type="number" data-scope="joint" data-id="${c.id}" data-i="${i}" data-f="${f}" value="${r1(p[f])}"></label>`).join('')}</div>`).join('')
+      :`<p class="muted">${c.mode==='custom'?'No joints: the conduit runs straight between the boxes.':'The path is automatic. Add a joint to take control of it.'}</p>`}
+    <p class="muted">Double-click the conduit to add a joint where you click. Drag a joint (blue dot) to move it across; hold Shift while dragging to raise or lower it. Elevation is measured from the Térreo floor. Joints stay put when boxes move.</p>
+    <div class="btns"><button class="btn sm" data-act="add-joint" data-id="${c.id}">Add joint</button>${c.mode==='custom'?`<button class="btn sm" data-act="reset-path" data-id="${c.id}">Reset to automatic</button>`:''}</div>
     <div class="btns"><button class="btn sm" data-act="sel-box" data-id="${A.id}">Go to ${esc(A.label)}</button><button class="btn sm" data-act="sel-box" data-id="${B.id}">Go to ${esc(B.label)}</button></div>
     <div class="btns"><button class="btn danger" data-act="del">Delete conduit</button></div>`;
 }
 function renderElec(){
   const total=S.conduits.reduce((s,c)=>s+conLen(c),0);
   pane.innerHTML=`<div class="stats"><div class="stat"><b>${S.boxes.length}</b><span>boxes</span></div><div class="stat"><b>${S.conduits.length}</b><span>conduits</span></div><div class="stat"><b>${(total/100).toFixed(1)}</b><span>m total</span></div></div>
+    <div class="checks" role="group" aria-label="Show conduit types">${Object.entries(CTYPES).map(([k,l])=>`<label><input type="checkbox" data-scope="ctype" data-f="${k}"${view.ctype[k]!==false?' checked':''}> <span class="sw" style="background:var(${k==='power'?'--c-power':k==='communication'?'--c-comm':'--conduit'})"></span>${l} (${S.conduits.filter(c=>c.type===k).length})</label>`).join('')}</div>
     <h3>Junction boxes</h3>
-    ${S.boxes.length?`<div class="list">${S.boxes.map(b=>{const w=wallById(b.wallId),n=S.conduits.filter(c=>c.a===b.id||c.b===b.id).length;return`<button class="li" data-act="sel-box" data-id="${b.id}"><span class="sw" style="background:var(--accent)"></span><span class="grow">${esc(b.label)}</span><span class="num">${esc(S.floors[w.floor].name)} · ${n}↔</span></button>`;}).join('')}</div>`:'<p class="muted">No boxes yet. Choose the Box tool and click a wall.</p>'}
+    ${S.boxes.length?`<div class="list">${S.boxes.map(b=>{const n=S.conduits.filter(c=>c.a===b.id||c.b===b.id).length;return`<button class="li" data-act="sel-box" data-id="${b.id}"><span class="sw" style="background:var(--accent)"></span><span class="grow">${esc(b.label)}${b.circuit?' · c'+esc(b.circuit):''}</span><span class="num">${esc(S.floors[boxFloor(b)].name)} · ${n}↔</span></button>`;}).join('')}</div>`:'<p class="muted">No boxes yet. Choose the Box tool and click a wall.</p>'}
     <h3>Conduits</h3>
-    ${S.conduits.length?`<div class="list">${S.conduits.map(c=>`<button class="li" data-act="sel-conduit" data-id="${c.id}"><span class="sw" style="background:var(--conduit)"></span><span class="grow">${esc(boxById(c.a).label)} → ${esc(boxById(c.b).label)}</span><span class="num">${(conLen(c)/100).toFixed(2)} m</span></button>`).join('')}</div>`:'<p class="muted">No conduits yet.</p>'}
+    ${S.conduits.length?`<div class="list">${S.conduits.map(c=>`<button class="li" data-act="sel-conduit" data-id="${c.id}"><span class="sw" style="background:var(${c.type==='power'?'--c-power':c.type==='communication'?'--c-comm':'--conduit'})"></span><span class="grow">${esc(boxById(c.a).label)} → ${esc(boxById(c.b).label)}</span><span class="num">${(conLen(c)/100).toFixed(2)} m</span></button>`).join('')}</div>`:'<p class="muted">No conduits yet.</p>'}
     <div class="btns"><button class="btn danger" data-act="clear-elec">${clearArm?'Click again to remove all boxes':'Remove all boxes and conduits'}</button></div>`;
 }
 function renderRooms(){
@@ -780,15 +862,17 @@ function flyTo(target,pos){
   anim={t0:performance.now(),dur:650,ft:controls.target.clone(),tt:target.clone(),fp:camera.position.clone(),tp:pos.clone()};
 }
 function ensureFloor(f){if(!view.show[f]){view.show[f]=true;syncControls();}}
-function boxNormal(b){const w=wallById(b.wallId),G=geom(w);return{n:new THREE.Vector3(G.nx*b.side,0,G.ny*b.side),u:new THREE.Vector3(G.ux,0,G.uy),w};}
+function boxNormal(b){if(isCeil(b))return{n:new THREE.Vector3(0,0,1),u:new THREE.Vector3(1,0,0)};const w=wallById(b.wallId),G=geom(w);return{n:new THREE.Vector3(G.nx*b.side,0,G.ny*b.side),u:new THREE.Vector3(G.ux,0,G.uy),w};}
 function focusBox(id){
-  const b=boxById(id);if(!b)return;const {n,u,w}=boxNormal(b);ensureFloor(w.floor);
-  const p=facePt(w,b.along,b.z,b.side);
+  const b=boxById(id);if(!b)return;ensureFloor(boxFloor(b));
+  const p=boxAttach(b);
+  if(isCeil(b)){flyTo(p,p.clone().add(new THREE.Vector3(60,-150,200)));return;}
+  const {n,u}=boxNormal(b);
   flyTo(p,p.clone().addScaledVector(n,240).addScaledVector(u,70).add(new THREE.Vector3(0,60,0)));
 }
 function focusConduit(id){
   const c=conById(id),pts=c&&conduitPts(c);if(!pts)return;
-  const A=boxById(c.a),B=boxById(c.b);ensureFloor(wallById(A.wallId).floor);ensureFloor(wallById(B.wallId).floor);
+  const A=boxById(c.a),B=boxById(c.b);ensureFloor(boxFloor(A));ensureFloor(boxFloor(B));
   const bb=new THREE.Box3().setFromPoints(pts),ctr=bb.getCenter(new THREE.Vector3()),ext=bb.getSize(new THREE.Vector3()).length();
   const {n,u}=boxNormal(A);
   flyTo(ctr,ctr.clone().addScaledVector(n,Math.max(230,ext*1.15+120)).addScaledVector(u,ext*.25).add(new THREE.Vector3(0,60+ext*.25,0)));
@@ -800,7 +884,7 @@ function focusRoom(id){
   flyTo(t,t.clone().add(new THREE.Vector3(0,380+size*1.1,220+size*.5)));
 }
 /* ---------- Markdown export for AI agents ---------- */
-function facing(b){const {n}=boxNormal(b);return Math.abs(n.x)>Math.abs(n.z)?(n.x>0?'+x (right)':'−x (left)'):(n.z>0?'+y (toward street)':'−y (toward back)');}
+function facing(b){if(isCeil(b))return 'down (ceiling)';const {n}=boxNormal(b);return Math.abs(n.x)>Math.abs(n.z)?(n.x>0?'+x (right)':'−x (left)'):(n.z>0?'+y (toward street)':'−y (toward back)');}
 function roomOf(f,x,y){let best=null,ba=Infinity;for(const r of S.rooms){if(r.floor!==f)continue;const [x0,y0,x1,y1]=r.bounds;if(x>=Math.min(x0,x1)-6&&x<=Math.max(x0,x1)+6&&y>=Math.min(y0,y1)-6&&y<=Math.max(y0,y1)+6){const a=Math.abs((x1-x0)*(y1-y0));if(a<ba){ba=a;best=r;}}}return best;}
 function buildMd(embed=true){
   const R=Math.round,L=[],fn=f=>S.floors[f].name,cell=s=>String(s).replace(/\|/g,'/');
@@ -832,14 +916,14 @@ function buildMd(embed=true){
       L.push(`| ${w.id} | ${cell(w.name)} | ${R(w.x1)}, ${R(w.y1)} | ${R(w.x2)}, ${R(w.y2)} | ${R(geom(w).L)} | ${w.t} | ${R(wallH(w))} | ${w.type==='glass'?'glass':'masonry'} | ${w.exterior?'yes':'no'} | ${w.approx?'yes':'no'} | ${cell(ops)} |`);
     });L.push('');
   });
-  L.push('## Junction boxes','',`${S.boxes.length} boxes. Boxes are 12 × 12 cm squares mounted on a wall face.`,'','| ID | Label | Floor | Room | Wall | Along | z | Face | Faces | Plan x, y | Abs. elevation | Conduits |','|---|---|---|---|---|---|---|---|---|---|---|---|');
-  S.boxes.forEach(b=>{const w=wallById(b.wallId),p=facePt(w,b.along,b.z,b.side),rm=roomOf(w.floor,p.x,p.z),n=S.conduits.filter(c=>c.a===b.id||c.b===b.id).length;
-    L.push(`| ${b.id} | ${cell(b.label)} | ${fn(w.floor)} | ${rm?cell(rm.name)+' ('+rm.id+')':'—'} | ${w.id} ${cell(w.name)} | ${R(b.along)} | ${R(b.z)} | ${b.side===1?'A':'B'} | ${facing(b)} | ${R(p.x)}, ${R(p.z)} | ${R(p.y)} | ${n} |`);});
-  L.push('','## Conduits','',`${S.conduits.length} conduits, ${(total/100).toFixed(2)} m in total. Orthogonal routing runs on the wall face; between different walls it rises to 20 cm below the ceiling, crosses through the ceiling/slab, and drops to the other box. Straight routing is a direct line.`,'','| ID | From | To | Routing | Length (m) | Path points (x, y, abs. elevation) |','|---|---|---|---|---|---|');
+  L.push('## Junction boxes','',`${S.boxes.length} boxes: ${S.boxes.filter(b=>!isCeil(b)).length} on walls, ${S.boxes.filter(isCeil).length} on ceilings. Boxes are 12 × 12 cm squares (panels 30 × 45). Ceiling boxes sit on the underside of the slab or roof above their floor.`,'','| ID | Label | Type | Circuit | Floor | Room | Mount | Wall | Along | z | Face | Faces | Plan x, y | Abs. elevation | Approx | Conduits |','|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|');
+  S.boxes.forEach(b=>{const f=boxFloor(b),w=isCeil(b)?null:wallById(b.wallId),p=boxPlan(b),rm=roomOf(f,p.x,p.y),n=S.conduits.filter(c=>c.a===b.id||c.b===b.id).length;
+    L.push(`| ${b.id} | ${cell(b.label)} | ${BOX_KINDS[b.kind]} | ${cell(b.circuit||'—')} | ${fn(f)} | ${rm?cell(rm.name)+' ('+rm.id+')':'—'} | ${isCeil(b)?'ceiling':'wall'} | ${w?w.id+' '+cell(w.name):'—'} | ${w?R(b.along):'—'} | ${w?R(b.z):'—'} | ${w?(b.side===1?'A':'B'):'—'} | ${facing(b)} | ${R(p.x)}, ${R(p.y)} | ${R(p.elev)} | ${b.approx?'yes':'no'} | ${n} |`);});
+  L.push('','## Conduits','',`${S.conduits.length} conduits, ${(total/100).toFixed(2)} m in total. Orthogonal routing runs on the wall face; otherwise it rises to 6 cm below the ceiling, runs straight through the ceiling/slab to the other box (ceiling boxes connect directly at that level) and drops to it. Straight routing is a direct line. Custom routing passes through the listed joints.`,'','| ID | Type | From | To | Routing | Length (m) | Path points (x, y, abs. elevation) |','|---|---|---|---|---|---|---|');
   S.conduits.forEach(c=>{const A=boxById(c.a),B=boxById(c.b),pts=conduitPts(c)||[];
-    L.push(`| ${c.id} | ${A.id} ${cell(A.label)} | ${B.id} ${cell(B.label)} | ${c.mode==='straight'?'straight':'orthogonal'} | ${(conLen(c)/100).toFixed(2)} | ${pts.map(p=>`(${R(p.x)}, ${R(p.z)}, ${R(p.y)})`).join(' → ')} |`);});
+    L.push(`| ${c.id} | ${CTYPES[c.type]} | ${A.id} ${cell(A.label)} | ${B.id} ${cell(B.label)} | ${c.mode} | ${(conLen(c)/100).toFixed(2)} | ${pts.map(p=>`(${R(p.x)}, ${R(p.z)}, ${R(p.y)})`).join(' → ')} |`);});
   L.push('','## Not modelled','','- Floor level steps (−0,70 / −0,65 / +0,60 / +0,65 m); every floor plate is flat.','- Roof parapet, rufo, marquise and façade cladding.','- Door leaves and swing direction.','');
-  L.push('## Editing the model','',(embed?'To change the house, edit the JSON below and paste it into Data → Import in the 3D model.':'The full model lives in `house.json` next to this file; edit it directly (then use Data → Reload in the page) or through the page. This file is regenerated on every save.')+' Schema: `floors[2]{name,height}`, `slab`, `walls[]{id,floor(0|1),name,x1,y1,x2,y2,t,h(null = floor height),type("wall"|"glass"),exterior,approx,openings[]{id,kind("door"|"window"),offset,width,height,sill}}`, `rooms[]{id,floor,name,area,x,y,bounds[x0,y0,x1,y1]}`, `boxes[]{id,label,wallId,along,z,side(1 = Face A, -1 = Face B)}`, `conduits[]{id,a,b,mode("orthogonal"|"straight")}`, plus `slabs{ground,upper,roof}{outer[[x,y]],holes[[[x,y]]]}` and `stair`.','');
+  L.push('## Editing the model','',(embed?'To change the house, edit the JSON below and paste it into Data → Import in the 3D model.':'The full model lives in `house.json` next to this file; edit it directly (then use Data → Reload in the page) or through the page. This file is regenerated on every save.')+' Schema: `floors[2]{name,height}`, `slab`, `walls[]{id,floor(0|1),name,x1,y1,x2,y2,t,h(null = floor height),type("wall"|"glass"),exterior,approx,openings[]{id,kind("door"|"window"),offset,width,height,sill}}`, `rooms[]{id,floor,name,area,x,y,bounds[x0,y0,x1,y1]}`, `boxes[]{id,label,kind,circuit,approx,mount("wall"|"ceiling"); wall: wallId,along,z,side(1 = Face A, -1 = Face B); ceiling: floor,x,y}`, `conduits[]{id,a,b,type("power"|"lighting"|"communication"),mode("orthogonal"|"straight"|"custom"),points[]{x,y,z(abs. elevation)}}`, plus `slabs{ground,upper,roof}{outer[[x,y]],holes[[[x,y]]]}` and `stair`.','');
   if(embed)L.push('```json',JSON.stringify(S),'```','');
   return L.join('\n');
 }
@@ -852,6 +936,9 @@ function renderData(){
       <p class="muted">Use reload after editing house.json by hand or after a git checkout.</p>`
     :`<p class="muted">${store.mode==='static'?'This is the published, read-only copy. It always shows the committed house.json; changes you make here disappear when you reload. To edit for real, run <b>node server.js</b> locally, edit at http://127.0.0.1:8000, then commit and push.':'house.json could not be loaded. Run <b>node server.js</b> in the repository folder and open <b>http://127.0.0.1:8000</b>.'}</p>
       ${store.mode==='static'?'<div class="btns"><button class="btn" data-act="download-json">Download these changes as house.json</button></div>':''}`}
+    <h3>Electrical layout</h3>
+    <p class="muted">Replace all junction boxes and conduits, keeping walls and rooms. Accepts an electrical file (<b>boxes</b> + <b>conduits</b>) or a full model. Undo brings the previous layout back.</p>
+    <div class="btns"><label class="btn" for="elecFile">Load from file…</label><input type="file" id="elecFile" accept=".json,application/json" hidden></div>
     <h3>For AI agents</h3>
     <p class="muted">Markdown brief of the current model: coordinate system, floors, stair, rooms, every wall and opening, where each box is and each conduit's route and length.${fileMode?' It is also saved as house.md on every change.':''}</p>
     <label class="fld full"><span>house.md</span><textarea id="mdOut" readonly>${esc(buildMd(!fileMode))}</textarea></label>
@@ -862,7 +949,17 @@ function renderData(){
     <label class="fld full"><span>Import</span><textarea id="imp" placeholder="Paste a model JSON here"></textarea></label>
     <div class="btns"><button class="btn" data-act="import">Load pasted JSON</button><label class="btn" for="impFile">Load .json file</label><input type="file" id="impFile" accept=".json,application/json" hidden></div>
     <p class="muted">Importing replaces the model${fileMode?' and overwrites house.json':''}. Undo brings it back.</p>`;
+  const ef=$('#elecFile');if(ef)ef.onchange=()=>{const file=ef.files[0];if(!file)return;const rd=new FileReader();rd.onload=()=>replaceElectrical(rd.result);rd.readAsText(file);};
   const f=$('#impFile');if(f)f.onchange=()=>{const file=f.files[0];if(!file)return;const rd=new FileReader();rd.onload=()=>importText(rd.result);rd.readAsText(file);};
+}
+function replaceElectrical(t){
+  let o;try{o=typeof t==='string'?JSON.parse(t):t;}catch(e){toast('That is not valid JSON');return;}
+  if(!o||!Array.isArray(o.boxes)||!Array.isArray(o.conduits)){toast('The file needs "boxes" and "conduits" lists');return;}
+  const tmp=JSON.parse(JSON.stringify(S));tmp.boxes=JSON.parse(JSON.stringify(o.boxes));tmp.conduits=JSON.parse(JSON.stringify(o.conduits));
+  const nb=tmp.boxes.length,nc=tmp.conduits.length;
+  pushUndo();S=normalize(tmp);sel=null;afterLoad();
+  const lostB=nb-S.boxes.length,lostC=nc-S.conduits.length;
+  toast(`Electrical layout: ${S.boxes.length} boxes, ${S.conduits.length} conduits`+(lostB||lostC?` (skipped ${lostB} boxes on missing walls, ${lostC} conduits)`:''));
 }
 function importText(t){
   let o;try{o=JSON.parse(t);}catch(e){toast('That is not valid JSON');return;}
@@ -894,11 +991,15 @@ pane.addEventListener('change',e=>{
   } else if(sc==='box'){
     const b=boxById(el.dataset.id);if(!b)return;
     if(f==='connect'){if(v)connect(b.id,v);return;}
-    if((f==='along'||f==='z')&&isNaN(n))return renderPanel();
-    pushUndo();const w=wallById(b.wallId),G=geom(w);
+    if(['along','z','x','y'].includes(f)&&isNaN(n))return renderPanel();
+    pushUndo();const w=isCeil(b)?null:wallById(b.wallId),G=w&&geom(w);
     if(f==='label')b.label=v||'Box';
-    else if(f==='along')b.along=clamp(r1(n),6,G.L-6);
-    else if(f==='z')b.z=clamp(r1(n),6,wallH(w)-6);
+    else if(f==='circuit')b.circuit=v.trim();
+    else if(f==='kind')b.kind=v;
+    else if(f==='approx')b.approx=v;
+    else if(f==='x'||f==='y')b[f]=r1(n);
+    else if(f==='along'&&w)b.along=clamp(r1(n),6,G.L-6);
+    else if(f==='z'&&w)b.z=clamp(r1(n),6,wallH(w)-6);
     else if(f==='side')b.side=+v;
   } else if(sc==='room'){
     const r=roomById(el.dataset.id);if(!r)return;
@@ -910,7 +1011,14 @@ pane.addEventListener('change',e=>{
     else if(f==='x'||f==='y')r[f]=r1(n);
     else r.bounds[{x0:0,y0:1,x1:2,y1:3}[f]]=r1(n);
   } else if(sc==='conduit'){
-    const c=conById(el.dataset.id);if(!c)return;pushUndo();c.mode=v;
+    const c=conById(el.dataset.id);if(!c)return;pushUndo();
+    if(f==='type')c.type=v;
+    else if(f==='mode'){if(v==='custom'){if(c.mode!=='custom')materialize(c);}else c.mode=v;}
+  } else if(sc==='joint'){
+    const c=conById(el.dataset.id),p=c&&c.points[+el.dataset.i];if(!p||isNaN(n))return renderPanel();
+    pushUndo();p[f]=r1(n);
+  } else if(sc==='ctype'){
+    view.ctype[f]=v;refresh();return;
   }
   save();refresh();
 });
@@ -936,6 +1044,11 @@ pane.addEventListener('click',e=>{
   else if(a==='copy'){const t=$('#exp');const ok=()=>toast('JSON copied');
     try{navigator.clipboard.writeText(t.value).then(ok,()=>{t.select();toast('Press Ctrl+C to copy');});}catch(err){t.select();toast('Press Ctrl+C to copy');}}
   else if(a==='import'){importText($('#imp').value);}
+  else if(a==='add-joint'){const c=conById(b.dataset.id);if(!c)return;pushUndo();if(c.mode!=='custom')materialize(c);
+    const pts=conduitPts(c);let bi=1,bl=-1;for(let i=1;i<pts.length;i++){const d=pts[i].distanceTo(pts[i-1]);if(d>bl){bl=d;bi=i;}}
+    const m=pts[bi-1].clone().add(pts[bi]).multiplyScalar(.5);c.points.splice(bi-1,0,{x:r1(m.x),y:r1(m.z),z:r1(m.y)});save();refresh();}
+  else if(a==='del-joint'){const c=conById(b.dataset.id);if(!c)return;pushUndo();c.points.splice(+b.dataset.i,1);save();refresh();}
+  else if(a==='reset-path'){const c=conById(b.dataset.id);if(!c)return;pushUndo();c.mode='orthogonal';c.points=[];save();refresh();}
   else if(a==='reload-file'){fetch(DATA_FILE,{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(o=>{if(!valid(o))throw 0;pushUndo();S=normalize(o);store.lastSaved=fmtJSON(S);sel=null;syncControls();refresh();setStore('saved');toast('Reloaded house.json');}).catch(()=>toast('Could not read house.json'));}
   else if(a==='download-json'){const url=URL.createObjectURL(new Blob([fmtJSON(S)],{type:'application/json'}));const l=document.createElement('a');l.href=url;l.download='house.json';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 
@@ -950,7 +1063,7 @@ window.addEventListener('keydown',e=>{
   if(mod)return;
   if(k==='escape'){if(wallStart||conA){wallStart=null;conA=null;preview.visible=false;hint();}else if(view.gizmo){view.gizmo=null;refresh();}else if(sel){sel=null;refresh();}}
   else if(k==='delete'||k==='backspace'){if(sel){e.preventDefault();deleteSel();}}
-  else if(k==='v')setTool('select');else if(k==='w')setTool('wall');else if(k==='b')setTool('box');else if(k==='c')setTool('conduit');
+  else if(k==='v')setTool('select');else if(k==='w')setTool('wall');else if(k==='b')setTool('box');else if(k==='l')setTool('ceil');else if(k==='c')setTool('conduit');
   else if(k==='g'&&sel&&sel.kind==='wall'){view.gizmo=view.gizmo==='translate'?null:'translate';refresh();}
   else if(k==='r'&&sel&&sel.kind==='wall'){view.gizmo=view.gizmo==='rotate'?null:'rotate';refresh();}
 });
