@@ -76,7 +76,8 @@ The JSON is formatted with one property per line and coordinate pairs on one lin
 - **Data → Electrical layout** replaces all boxes and conduits from a file, keeping walls and rooms.
 - Conduits between boxes; a box can have zero or many. Routing is *automatic* (on the wall face when both boxes share a wall face; otherwise up to the ceiling, straight through the slab, and down), *straight*, or *custom*.
 - Custom paths: double-click a conduit to add a joint where you click, or use **Add joint** in its inspector. Drag a joint to move it horizontally; hold Shift while dragging to change its height. Joints can also be typed in, removed, or reset to the automatic path. They are stored in absolute coordinates, so they stay put when a box moves.
-- Conduit types: **power**, **lighting** and **communication**, each with its own colour and a show/hide filter in the Electrical tab.
+- Conduit types: **power**, **lighting**, **communication** and **alarm**, each with its own colour and a show/hide filter in the Electrical tab.
+- Box types also cover the alarm and communication systems: door/window sensor, motion sensor, alarm keypad, alarm central, camera, video intercom, TV outlet, phone/data outlet, junction box.
 - Length per conduit and in total.
 - Picking a box or conduit in the Electrical tab flies the camera to it.
 
@@ -123,10 +124,11 @@ rooms[]     {id, floor (0|1), name, area, x, y, bounds [x0, y0, x1, y1]}
 walls[]     {id, floor (0|1), name, x1, y1, x2, y2, t, h (null = floor height),
              type ("wall"|"glass"), exterior, approx, note,
              openings[] {id, kind ("door"|"window"), offset, width, height, sill, approx, note}}
-boxes[]     {id, label, kind ("outlet"|"switch"|"light"|"ac"|"shower"|"panel"|"other"), circuit, approx,
+boxes[]     {id, label, kind ("outlet"|"switch"|"light"|"ac"|"shower"|"panel"|"sensor"|"motion"|"keypad"|"alarm_central"|
+             "camera"|"intercom"|"tv"|"data"|"junction"|"other"), circuit, approx,
              mount "wall":    wallId, along, z, side (1 = Face A, -1 = Face B)
              mount "ceiling": floor, x, y}
-conduits[]  {id, a, b, type ("power"|"lighting"|"communication"),
+conduits[]  {id, a, b, type ("power"|"lighting"|"communication"|"alarm"),
              mode ("orthogonal"|"straight"|"custom"), points [{x, y, z}] (custom joints; z = elevation above the Térreo floor)}
 ```
 
@@ -168,3 +170,14 @@ The boxes and conduits in `house.json` were read from the electrical sheet *016-
 - Conduits follow the drawn connections between points; their automatic routing is schematic (vertical on walls, straight across the slab), not the drawn curves. Use custom joints to match a real route.
 - Conduit types were assigned automatically: runs between lights and switches only are *lighting*, everything else *power*. The sheet has no communication points.
 - Circuits 12–14 (air conditioning) run over the roof slab and have no points on the plans, so they are not modelled. The QD1 → QD2 feeder and the hall switch riser to the void lights are cross-floor conduits.
+
+## Alarm and communication layout (TIPO A)
+
+Read from the sheet *016-13 Comunicação/Alarme*, plans "TIPO A · Pavimento Térreo" and "TIPO A · Pavimento Superior" (1:50): 31 boxes and 31 conduits (20 alarm, 11 communication), stored in `house.json` with everything else. Box IDs start with `a`, conduit IDs with `ca`.
+
+- The sheet has no legend. Symbols were read as: filled circle on a door or window = alarm sensor; labelled "Sensor Presença" = motion sensor; camera icons = cameras ("Caixa 2x4", H = 220 cm); "Teclado do Alarme" = keypad ("Caixa 4x4", H = 150 cm); "Vídeo Porteiro" = video intercom; triangle with a bar = TV outlet; the "a"-shaped symbol = phone/data outlet.
+- Two line styles: "— · · —" runs (sensors, keypad) are typed **alarm**; "— · —" runs (TV, phone/data, cameras, intercom) are typed **communication**.
+- The Térreo runs meet at a ceiling junction in the Estar that rises ("Sobe para central do Alarme") to the alarm central on the Superior circulation wall, next to QD2. The "Deixar espera sobre a laje" stub above the slab is not modelled.
+- Heights given on the sheet: cameras 220, keypad 150. Defaults: opening sensors 10 cm above the opening (220, entrance 260), motion sensors 220, intercom and central 150, TV and phone/data 30. Those boxes are flagged approximate.
+- TV and phone/data points that fall on a power outlet were shifted 15–20 cm along the wall so the boxes don't overlap.
+- The TV and phone/data pair on the right wall at the stair ("Corre pela parede") is drawn on the Superior plan, over the stair void. It is placed there, 30 cm above the upper floor level; check whether it belongs on the Térreo instead.

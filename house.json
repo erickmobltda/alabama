@@ -2232,6 +2232,377 @@
       "along": 113.2,
       "z": 74.5,
       "side": -1
+    },
+    {
+      "id": "aJ0",
+      "label": "Alarm junction (rises to central)",
+      "mount": "ceiling",
+      "kind": "junction",
+      "circuit": "",
+      "approx": true,
+      "floor": 0,
+      "x": 249,
+      "y": 821
+    },
+    {
+      "id": "aCam1",
+      "label": "Camera (back yard)",
+      "mount": "wall",
+      "kind": "camera",
+      "circuit": "",
+      "approx": false,
+      "wallId": "g3",
+      "along": 8,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "aS1",
+      "label": "Sensor A.Serviço window",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g3",
+      "along": 107,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aS2",
+      "label": "Sensor A.Serviço door",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g4",
+      "along": 176,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "aM1",
+      "label": "Motion sensor Churrasqueira",
+      "mount": "wall",
+      "kind": "motion",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g4",
+      "along": 264,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "aS3",
+      "label": "Sensor Lavabo door",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g6",
+      "along": 74,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "aS4",
+      "label": "Sensor Estar (door side)",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g8",
+      "along": 234,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aS5",
+      "label": "Sensor Estar window",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g8",
+      "along": 257,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aVP",
+      "label": "Video intercom",
+      "mount": "wall",
+      "kind": "intercom",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g10",
+      "along": 27,
+      "side": -1,
+      "z": 150
+    },
+    {
+      "id": "aM2",
+      "label": "Motion sensor stair",
+      "mount": "wall",
+      "kind": "motion",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g10",
+      "along": 48,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aS6",
+      "label": "Sensor Garagem window",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g11",
+      "along": 104,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "aKey",
+      "label": "Alarm keypad",
+      "mount": "wall",
+      "kind": "keypad",
+      "circuit": "",
+      "approx": false,
+      "wallId": "g13",
+      "along": 198,
+      "side": -1,
+      "z": 150
+    },
+    {
+      "id": "aS7",
+      "label": "Sensor entrance door",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "g14",
+      "along": 24,
+      "side": -1,
+      "z": 260
+    },
+    {
+      "id": "aCam2",
+      "label": "Camera (entrance)",
+      "mount": "wall",
+      "kind": "camera",
+      "circuit": "",
+      "approx": false,
+      "wallId": "g2",
+      "along": 1655,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aCentral",
+      "label": "Alarm central",
+      "mount": "wall",
+      "kind": "alarm_central",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u13",
+      "along": 205,
+      "side": 1,
+      "z": 150
+    },
+    {
+      "id": "aS8",
+      "label": "Sensor Dormitório window",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u3",
+      "along": 164,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aS9",
+      "label": "Sensor BWC window",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u5",
+      "along": 13,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aS10",
+      "label": "Sensor BWC door",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u4",
+      "along": 348,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "aS11",
+      "label": "Sensor light well (circulation)",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u8",
+      "along": 118,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aS12",
+      "label": "Sensor light well (BWC side)",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u9",
+      "along": 70,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "aS13",
+      "label": "Sensor BWC suíte window",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u10",
+      "along": 120,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aS14",
+      "label": "Sensor Dormitório 2 window",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u11",
+      "along": 158,
+      "side": 1,
+      "z": 220
+    },
+    {
+      "id": "aS15",
+      "label": "Sensor Sacada door",
+      "mount": "wall",
+      "kind": "sensor",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u22",
+      "along": 235,
+      "side": -1,
+      "z": 220
+    },
+    {
+      "id": "aTV1",
+      "label": "TV Dormitório",
+      "mount": "wall",
+      "kind": "tv",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u3",
+      "along": 257,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "aD1",
+      "label": "Phone/data Dormitório",
+      "mount": "wall",
+      "kind": "data",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u2",
+      "along": 452,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "aTV2",
+      "label": "TV Dormitório 2",
+      "mount": "wall",
+      "kind": "tv",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u15",
+      "along": 104,
+      "side": -1,
+      "z": 30
+    },
+    {
+      "id": "aD2",
+      "label": "Phone/data Dormitório 2",
+      "mount": "wall",
+      "kind": "data",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u2",
+      "along": 756,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "aTV3",
+      "label": "TV stair wall",
+      "mount": "wall",
+      "kind": "tv",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u2",
+      "along": 1237,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "aD3",
+      "label": "Phone/data stair wall",
+      "mount": "wall",
+      "kind": "data",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u2",
+      "along": 1274,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "aD4",
+      "label": "Phone/data Suíte",
+      "mount": "wall",
+      "kind": "data",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u21",
+      "along": 201,
+      "side": 1,
+      "z": 30
+    },
+    {
+      "id": "aTV4",
+      "label": "TV Suíte",
+      "mount": "wall",
+      "kind": "tv",
+      "circuit": "",
+      "approx": true,
+      "wallId": "u1",
+      "along": 1507,
+      "side": -1,
+      "z": 30
     }
   ],
   "conduits": [
@@ -2798,6 +3169,254 @@
       "a": "binmxjl",
       "b": "gQD1",
       "mode": "orthogonal"
+    },
+    {
+      "id": "ca1",
+      "a": "aCam1",
+      "b": "aJ0",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca2",
+      "a": "aS1",
+      "b": "aS2",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca3",
+      "a": "aS2",
+      "b": "aM1",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca4",
+      "a": "aM1",
+      "b": "aJ0",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca5",
+      "a": "aM1",
+      "b": "aS3",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca6",
+      "a": "aS3",
+      "b": "aS4",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca7",
+      "a": "aS4",
+      "b": "aS5",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca8",
+      "a": "aS5",
+      "b": "aJ0",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca9",
+      "a": "aJ0",
+      "b": "aVP",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca10",
+      "a": "aJ0",
+      "b": "aM2",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca11",
+      "a": "aJ0",
+      "b": "aS6",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca12",
+      "a": "aS6",
+      "b": "aS7",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca13",
+      "a": "aJ0",
+      "b": "aKey",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca14",
+      "a": "aJ0",
+      "b": "aCam2",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca15",
+      "a": "aS8",
+      "b": "aS9",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca16",
+      "a": "aS9",
+      "b": "aS10",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca17",
+      "a": "aS10",
+      "b": "aS12",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca18",
+      "a": "aS12",
+      "b": "aS13",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca19",
+      "a": "aS13",
+      "b": "aCentral",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca20",
+      "a": "aS11",
+      "b": "aS12",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca21",
+      "a": "aS13",
+      "b": "aS14",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca22",
+      "a": "aCentral",
+      "b": "aS15",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
+    },
+    {
+      "id": "ca23",
+      "a": "aCentral",
+      "b": "aD1",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca24",
+      "a": "aD1",
+      "b": "aTV1",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca25",
+      "a": "aCentral",
+      "b": "aTV2",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca26",
+      "a": "aTV2",
+      "b": "aD2",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca27",
+      "a": "aCentral",
+      "b": "aTV3",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca28",
+      "a": "aTV3",
+      "b": "aD3",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca29",
+      "a": "aCentral",
+      "b": "aD4",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca30",
+      "a": "aD4",
+      "b": "aTV4",
+      "mode": "orthogonal",
+      "type": "communication",
+      "points": []
+    },
+    {
+      "id": "ca31",
+      "a": "aJ0",
+      "b": "aCentral",
+      "mode": "orthogonal",
+      "type": "alarm",
+      "points": []
     }
   ]
 }

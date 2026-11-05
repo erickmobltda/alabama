@@ -11,7 +11,7 @@
 :root{
   --bg:#e3e7e2; --scene:#dde2dc; --panel:#f6f7f4; --ink:#1c2320; --muted:#5b6560; --line:#d0d6d0;
   --accent:#c9561a; --accent-ink:#ffffff; --sel:#1d6aa8; --approx:#b97e0c; --wall:#f2f1ec; --slab:#c4cac2;
-  --conduit:#d4a017; --c-power:#b83a4b; --c-comm:#2f7f86; --grid:#bcc3bb; --danger:#b3261e; --field:#ffffff;
+  --conduit:#d4a017; --c-power:#b83a4b; --c-comm:#2f7f86; --c-alarm:#7048b8; --grid:#bcc3bb; --danger:#b3261e; --field:#ffffff;
   --font-d:'Saira Condensed','Arial Narrow',sans-serif;
   --font-b:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   --font-m:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
@@ -19,11 +19,11 @@
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#181c1a; --scene:#1c211f; --panel:#212624; --ink:#e5eae6; --muted:#9aa49e; --line:#343b37;
   --accent:#ee7a3a; --accent-ink:#1a0f08; --sel:#5aa6e6; --approx:#e2aa3c; --wall:#c7cac2; --slab:#48504b;
-  --conduit:#e9bd3c; --c-power:#ec7d8d; --c-comm:#57b8bf; --grid:#323935; --danger:#f2867c; --field:#2a302d; color-scheme:dark } }
+  --conduit:#e9bd3c; --c-power:#ec7d8d; --c-comm:#57b8bf; --c-alarm:#b496f2; --grid:#323935; --danger:#f2867c; --field:#2a302d; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#181c1a; --scene:#1c211f; --panel:#212624; --ink:#e5eae6; --muted:#9aa49e; --line:#343b37;
   --accent:#ee7a3a; --accent-ink:#1a0f08; --sel:#5aa6e6; --approx:#e2aa3c; --wall:#c7cac2; --slab:#48504b;
-  --conduit:#e9bd3c; --c-power:#ec7d8d; --c-comm:#57b8bf; --grid:#323935; --danger:#f2867c; --field:#2a302d; color-scheme:dark }
+  --conduit:#e9bd3c; --c-power:#ec7d8d; --c-comm:#57b8bf; --c-alarm:#b496f2; --grid:#323935; --danger:#f2867c; --field:#2a302d; color-scheme:dark }
 
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:14px;overflow:hidden}
@@ -173,7 +173,7 @@ ul.notes{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px;line-hei
         <div class="slider"><label for="hG">Térreo walls</label><input type="range" id="hG" min="200" max="400" step="5"><output id="hGo"></output></div>
         <div class="slider"><label for="hU">Superior walls</label><input type="range" id="hU" min="200" max="400" step="5"><output id="hUo"></output></div>
         <div class="slider"><label for="hCut">Wall cut</label><input type="range" id="hCut" min="10" max="100" step="1"><output id="hCuto"></output></div>
-        <div class="legend"><span><i style="background:var(--wall);border:1px solid var(--line)"></i>Wall</span><span><i style="background:var(--approx)"></i>Approximate</span><span><i style="background:var(--sel)"></i>Selected</span><span><i style="background:var(--accent)"></i>Box</span><span><i style="background:var(--c-power)"></i>Power</span><span><i style="background:var(--conduit)"></i>Lighting</span><span><i style="background:var(--c-comm)"></i>Communication</span></div>
+        <div class="legend"><span><i style="background:var(--wall);border:1px solid var(--line)"></i>Wall</span><span><i style="background:var(--approx)"></i>Approximate</span><span><i style="background:var(--sel)"></i>Selected</span><span><i style="background:var(--accent)"></i>Box</span><span><i style="background:var(--c-power)"></i>Power</span><span><i style="background:var(--conduit)"></i>Lighting</span><span><i style="background:var(--c-comm)"></i>Communication</span><span><i style="background:var(--c-alarm)"></i>Alarm</span></div>
       </section>
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" data-tab="ins" aria-selected="true">Inspector</button>
@@ -328,6 +328,7 @@ const M={
   con:new THREE.MeshStandardMaterial({roughness:.5}),
   conP:new THREE.MeshStandardMaterial({roughness:.5}),
   conC:new THREE.MeshStandardMaterial({roughness:.5}),
+  conA:new THREE.MeshStandardMaterial({roughness:.5}),
   joint:new THREE.MeshBasicMaterial({depthTest:false,transparent:true}),
   conSel:new THREE.MeshStandardMaterial({roughness:.5}),
   edge:new THREE.LineBasicMaterial({transparent:true,opacity:.35}),
@@ -340,14 +341,14 @@ const M={
 let THEME={};
 function readTheme(){
   const cs=getComputedStyle(document.documentElement),g=n=>cs.getPropertyValue(n).trim()||'#888';
-  THEME={scene:g('--scene'),wall:g('--wall'),approx:g('--approx'),sel:g('--sel'),slab:g('--slab'),accent:g('--accent'),conduit:g('--conduit'),power:g('--c-power'),comm:g('--c-comm'),grid:g('--grid'),ink:g('--ink'),muted:g('--muted')};
+  THEME={scene:g('--scene'),wall:g('--wall'),approx:g('--approx'),sel:g('--sel'),slab:g('--slab'),accent:g('--accent'),conduit:g('--conduit'),power:g('--c-power'),comm:g('--c-comm'),alarm:g('--c-alarm'),grid:g('--grid'),ink:g('--ink'),muted:g('--muted')};
   scene.background=new THREE.Color(THEME.scene);
   M.wall.color.set(THEME.wall);
   M.approx.color.set(THEME.wall).lerp(new THREE.Color(THEME.approx),.55);
   M.sel.color.set(THEME.sel);M.glassSel.color.set(THEME.sel);M.glassApprox.color.set(THEME.approx);
   M.slab.color.set(THEME.slab);M.slabUp.color.set(THEME.slab).offsetHSL(0,0,.04);M.roof.color.set(THEME.slab).offsetHSL(0,0,-.05);
   M.box.color.set(THEME.accent);M.boxSel.color.set(THEME.sel);
-  M.con.color.set(THEME.conduit);M.conP.color.set(THEME.power);M.conC.color.set(THEME.comm);M.conSel.color.set(THEME.sel);M.joint.color.set(THEME.sel);
+  M.con.color.set(THEME.conduit);M.conP.color.set(THEME.power);M.conC.color.set(THEME.comm);M.conA.color.set(THEME.alarm);M.conSel.color.set(THEME.sel);M.joint.color.set(THEME.sel);
   M.edge.color.set(THEME.ink);M.edgeGhost.color.set(THEME.ink);M.ghost.color.set(THEME.wall);M.ghostSel.color.set(THEME.sel);M.preview.color.set(THEME.sel);M.snap.color.set(THEME.accent);
   if(grid){scene.remove(grid);grid.geometry.dispose();}
   grid=new THREE.GridHelper(4000,80,new THREE.Color(THEME.grid),new THREE.Color(THEME.grid));
@@ -421,7 +422,11 @@ function buildStairs(){
 }
 function facePt(w,along,z,side){const G=geom(w),off=(w.t/2+1.4)*side;return new THREE.Vector3(w.x1+G.ux*along+G.nx*off,base(w.floor)+z,w.y1+G.uy*along+G.ny*off);}
 const CEIL_GAP=6;
-const BOX_KINDS={outlet:'Outlet',switch:'Switch',light:'Light point',ac:'AC outlet',shower:'Shower',panel:'Panel (QD)',other:'Other'};
+const BOX_KINDS={outlet:'Outlet',switch:'Switch',light:'Light point',ac:'AC outlet',shower:'Shower',panel:'Panel (QD)',
+  sensor:'Alarm sensor (door/window)',motion:'Motion sensor',keypad:'Alarm keypad',alarm_central:'Alarm central',camera:'Camera',
+  intercom:'Video intercom',tv:'TV outlet',data:'Phone/data outlet',junction:'Junction box',other:'Other'};
+const ALARM_KINDS=['sensor','motion','keypad','alarm_central'],COMM_KINDS=['camera','intercom','tv','data'];
+const BIG_KINDS=['panel','alarm_central'];
 const isCeil=b=>!!b&&b.mount==='ceiling';
 const ceilY=f=>base(f)+floorH(f);
 function boxFloor(b){if(isCeil(b))return b.floor;const w=wallById(b.wallId);return w?w.floor:0;}
@@ -429,10 +434,10 @@ function boxAttach(b){if(isCeil(b))return new THREE.Vector3(b.x,ceilY(b.floor)-C
 function boxRoute(b){if(isCeil(b))return boxAttach(b);const w=wallById(b.wallId);return facePt(w,b.along,Math.max(b.z,Math.min(wallH(w),floorH(w.floor))-CEIL_GAP),b.side);}
 function boxPlan(b){const p=boxAttach(b);return p?{x:p.x,y:p.z,elev:isCeil(b)?ceilY(b.floor):p.y}:null;}
 function buildBox(b){
-  const f=boxFloor(b),sz=b.kind==='panel'?30:12,selB=sel&&sel.kind==='box'&&sel.id===b.id;let m;
+  const f=boxFloor(b),sz=BIG_KINDS.includes(b.kind)?30:12,selB=sel&&sel.kind==='box'&&sel.id===b.id;let m;
   if(isCeil(b)){m=new THREE.Mesh(new THREE.BoxGeometry(sz,5,sz),selB?M.boxSel:M.box);m.position.set(b.x,ceilY(f)-2.5,b.y);}
   else{const w=wallById(b.wallId);if(!w)return;const G=geom(w),off=(w.t/2+2.5)*b.side;
-    m=new THREE.Mesh(new THREE.BoxGeometry(sz,b.kind==='panel'?45:sz,5),selB?M.boxSel:M.box);
+    m=new THREE.Mesh(new THREE.BoxGeometry(sz,BIG_KINDS.includes(b.kind)?45:sz,5),selB?M.boxSel:M.box);
     m.position.set(w.x1+G.ux*b.along+G.nx*off,base(w.floor)+b.z,w.y1+G.uy*b.along+G.ny*off);m.rotation.y=G.theta;}
   m.castShadow=true;m.userData={kind:'box',id:b.id,floor:f};
   floorG[f].add(m);pickables.push(m);addEdges(m,floorG[f]);
@@ -442,9 +447,10 @@ function buildBox(b){
     floorG[f].add(sp);
   }
 }
-const CTYPES={power:'Power',lighting:'Lighting',communication:'Communication'};
+const ctVar=t=>t==='power'?'--c-power':t==='communication'?'--c-comm':t==='alarm'?'--c-alarm':'--conduit';
+const CTYPES={power:'Power',lighting:'Lighting',communication:'Communication',alarm:'Alarm'};
 const CMODES={orthogonal:'Automatic (on wall, then across the ceiling)',straight:'Straight line',custom:'Custom path (joints)'};
-const typeFromKinds=ks=>ks.every(k=>k==='light'||k==='switch')?'lighting':'power';
+const typeFromKinds=ks=>ks.some(k=>ALARM_KINDS.includes(k))?'alarm':ks.some(k=>COMM_KINDS.includes(k))?'communication':ks.every(k=>k==='light'||k==='switch')?'lighting':ks.every(k=>k==='junction')?'communication':'power';
 function inferType(c){return typeFromKinds([boxById(c.a),boxById(c.b)].map(b=>b&&b.kind));}
 const jointV=p=>new THREE.Vector3(p.x,p.z,p.y);
 function materialize(c){const pts=conduitPts(c)||[];c.points=pts.slice(1,-1).map(p=>({x:r1(p.x),y:r1(p.z),z:r1(p.y)}));c.mode='custom';}
@@ -464,7 +470,7 @@ function buildConduit(c){
   const fa=boxFloor(boxById(c.a)),fb=boxFloor(boxById(c.b));
   const grp=new THREE.Group();grp.visible=view.show[fa]&&view.show[fb];
   const isSel=sel&&sel.kind==='conduit'&&sel.id===c.id;
-  const mat=isSel?M.conSel:c.type==='power'?M.conP:c.type==='communication'?M.conC:M.con,up=new THREE.Vector3(0,1,0);
+  const mat=isSel?M.conSel:c.type==='power'?M.conP:c.type==='communication'?M.conC:c.type==='alarm'?M.conA:M.con,up=new THREE.Vector3(0,1,0);
   for(let i=1;i<pts.length;i++){
     const a=pts[i-1],b=pts[i],len=a.distanceTo(b),dir=b.clone().sub(a).normalize();
     const m=new THREE.Mesh(new THREE.CylinderGeometry(1.4,1.4,len,10),mat);
@@ -861,11 +867,11 @@ function renderPanel(){
 function renderElec(){
   const total=S.conduits.reduce((s,c)=>s+conLen(c),0);
   pane.innerHTML=`<div class="stats"><div class="stat"><b>${S.boxes.length}</b><span>boxes</span></div><div class="stat"><b>${S.conduits.length}</b><span>conduits</span></div><div class="stat"><b>${(total/100).toFixed(1)}</b><span>m total</span></div></div>
-    <div class="checks" role="group" aria-label="Show conduit types">${Object.entries(CTYPES).map(([k,l])=>`<label><input type="checkbox" data-scope="ctype" data-f="${k}"${view.ctype[k]!==false?' checked':''}> <span class="sw" style="background:var(${k==='power'?'--c-power':k==='communication'?'--c-comm':'--conduit'})"></span>${l} (${S.conduits.filter(c=>c.type===k).length})</label>`).join('')}</div>
+    <div class="checks" role="group" aria-label="Show conduit types">${Object.entries(CTYPES).map(([k,l])=>`<label><input type="checkbox" data-scope="ctype" data-f="${k}"${view.ctype[k]!==false?' checked':''}> <span class="sw" style="background:var(${ctVar(k)})"></span>${l} (${S.conduits.filter(c=>c.type===k).length})</label>`).join('')}</div>
     <h3>Junction boxes</h3>
     ${S.boxes.length?`<div class="list">${S.boxes.map(b=>{const n=S.conduits.filter(c=>c.a===b.id||c.b===b.id).length;return`<button class="li" data-act="sel-box" data-id="${b.id}"><span class="sw" style="background:var(--accent)"></span><span class="grow">${esc(b.label)}${b.circuit?' · c'+esc(b.circuit):''}</span><span class="num">${esc(S.floors[boxFloor(b)].name)} · ${n}↔</span></button>`;}).join('')}</div>`:'<p class="muted">No boxes yet. Choose the Box tool and click a wall.</p>'}
     <h3>Conduits</h3>
-    ${S.conduits.length?`<div class="list">${S.conduits.map(c=>`<button class="li" data-act="sel-conduit" data-id="${c.id}"><span class="sw" style="background:var(${c.type==='power'?'--c-power':c.type==='communication'?'--c-comm':'--conduit'})"></span><span class="grow">${esc(boxById(c.a).label)} → ${esc(boxById(c.b).label)}</span><span class="num">${(conLen(c)/100).toFixed(2)} m</span></button>`).join('')}</div>`:'<p class="muted">No conduits yet.</p>'}
+    ${S.conduits.length?`<div class="list">${S.conduits.map(c=>`<button class="li" data-act="sel-conduit" data-id="${c.id}"><span class="sw" style="background:var(${ctVar(c.type)})"></span><span class="grow">${esc(boxById(c.a).label)} → ${esc(boxById(c.b).label)}</span><span class="num">${(conLen(c)/100).toFixed(2)} m</span></button>`).join('')}</div>`:'<p class="muted">No conduits yet.</p>'}
     <div class="btns"><button class="btn danger" data-act="clear-elec">${clearArm?'Click again to remove all boxes':'Remove all boxes and conduits'}</button></div>`;
 }
 function renderRooms(){
@@ -935,14 +941,14 @@ function buildMd(embed=true){
       L.push(`| ${w.id} | ${cell(w.name)} | ${R(w.x1)}, ${R(w.y1)} | ${R(w.x2)}, ${R(w.y2)} | ${R(geom(w).L)} | ${w.t} | ${R(wallH(w))} | ${w.type==='glass'?'glass':'masonry'} | ${w.exterior?'yes':'no'} | ${w.approx?'yes':'no'} | ${cell(ops)} |`);
     });L.push('');
   });
-  L.push('## Junction boxes','',`${S.boxes.length} boxes: ${S.boxes.filter(b=>!isCeil(b)).length} on walls, ${S.boxes.filter(isCeil).length} on ceilings. Boxes are 12 × 12 cm squares (panels 30 × 45). Ceiling boxes sit on the underside of the slab or roof above their floor.`,'','| ID | Label | Type | Circuit | Floor | Room | Mount | Wall | Along | z | Face | Faces | Plan x, y | Abs. elevation | Approx | Conduits |','|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|');
+  L.push('## Junction boxes','',`${S.boxes.length} boxes: ${S.boxes.filter(b=>!isCeil(b)).length} on walls, ${S.boxes.filter(isCeil).length} on ceilings. Boxes are 12 × 12 cm squares (panels and the alarm central 30 × 45). Ceiling boxes sit on the underside of the slab or roof above their floor.`,'','| ID | Label | Type | Circuit | Floor | Room | Mount | Wall | Along | z | Face | Faces | Plan x, y | Abs. elevation | Approx | Conduits |','|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|');
   S.boxes.forEach(b=>{const f=boxFloor(b),w=isCeil(b)?null:wallById(b.wallId),p=boxPlan(b),rm=roomOf(f,p.x,p.y),n=S.conduits.filter(c=>c.a===b.id||c.b===b.id).length;
     L.push(`| ${b.id} | ${cell(b.label)} | ${BOX_KINDS[b.kind]} | ${cell(b.circuit||'—')} | ${fn(f)} | ${rm?cell(rm.name)+' ('+rm.id+')':'—'} | ${isCeil(b)?'ceiling':'wall'} | ${w?w.id+' '+cell(w.name):'—'} | ${w?R(b.along):'—'} | ${w?R(b.z):'—'} | ${w?(b.side===1?'A':'B'):'—'} | ${facing(b)} | ${R(p.x)}, ${R(p.y)} | ${R(p.elev)} | ${b.approx?'yes':'no'} | ${n} |`);});
   L.push('','## Conduits','',`${S.conduits.length} conduits, ${(total/100).toFixed(2)} m in total. Orthogonal routing runs on the wall face; otherwise it rises to 6 cm below the ceiling, runs straight through the ceiling/slab to the other box (ceiling boxes connect directly at that level) and drops to it. Straight routing is a direct line. Custom routing passes through the listed joints.`,'','| ID | Type | From | To | Routing | Length (m) | Path points (x, y, abs. elevation) |','|---|---|---|---|---|---|---|');
   S.conduits.forEach(c=>{const A=boxById(c.a),B=boxById(c.b),pts=conduitPts(c)||[];
     L.push(`| ${c.id} | ${CTYPES[c.type]} | ${A.id} ${cell(A.label)} | ${B.id} ${cell(B.label)} | ${c.mode} | ${(conLen(c)/100).toFixed(2)} | ${pts.map(p=>`(${R(p.x)}, ${R(p.z)}, ${R(p.y)})`).join(' → ')} |`);});
   L.push('','## Not modelled','','- Floor level steps (−0,70 / −0,65 / +0,60 / +0,65 m); every floor plate is flat.','- Roof parapet, rufo, marquise and façade cladding.','- Door leaves and swing direction.','');
-  L.push('## Editing the model','',(embed?'To change the house, edit the JSON below and paste it into Data → Import in the 3D model.':'The full model lives in `house.json` next to this file; edit it directly (then use Data → Reload in the page) or through the page. This file is regenerated on every save.')+' Schema: `floors[2]{name,height}`, `slab`, `walls[]{id,floor(0|1),name,x1,y1,x2,y2,t,h(null = floor height),type("wall"|"glass"),exterior,approx,openings[]{id,kind("door"|"window"),offset,width,height,sill}}`, `rooms[]{id,floor,name,area,x,y,bounds[x0,y0,x1,y1]}`, `boxes[]{id,label,kind,circuit,approx,mount("wall"|"ceiling"); wall: wallId,along,z,side(1 = Face A, -1 = Face B); ceiling: floor,x,y}`, `conduits[]{id,a,b,type("power"|"lighting"|"communication"),mode("orthogonal"|"straight"|"custom"),points[]{x,y,z(abs. elevation)}}`, plus `slabs{ground,upper,roof}{outer[[x,y]],holes[[[x,y]]]}` and `stair`.','');
+  L.push('## Editing the model','',(embed?'To change the house, edit the JSON below and paste it into Data → Import in the 3D model.':'The full model lives in `house.json` next to this file; edit it directly (then use Data → Reload in the page) or through the page. This file is regenerated on every save.')+' Schema: `floors[2]{name,height}`, `slab`, `walls[]{id,floor(0|1),name,x1,y1,x2,y2,t,h(null = floor height),type("wall"|"glass"),exterior,approx,openings[]{id,kind("door"|"window"),offset,width,height,sill}}`, `rooms[]{id,floor,name,area,x,y,bounds[x0,y0,x1,y1]}`, `boxes[]{id,label,kind,circuit,approx,mount("wall"|"ceiling"); wall: wallId,along,z,side(1 = Face A, -1 = Face B); ceiling: floor,x,y}`, `conduits[]{id,a,b,type("power"|"lighting"|"communication"|"alarm"),mode("orthogonal"|"straight"|"custom"),points[]{x,y,z(abs. elevation)}}`, plus `slabs{ground,upper,roof}{outer[[x,y]],holes[[[x,y]]]}` and `stair`.','');
   if(embed)L.push('```json',JSON.stringify(S),'```','');
   return L.join('\n');
 }
